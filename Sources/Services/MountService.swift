@@ -5,13 +5,26 @@ struct ActionOutcome: Sendable {
     let message: String
     let detail: String
     let needsFullDiskAccess: Bool
+    /// Helper root belum dipasang / belum diizinkan (perlu "Siapkan akses" sekali).
+    let needsHelperSetup: Bool
 
     static func ok(_ message: String, detail: String = "") -> ActionOutcome {
-        ActionOutcome(success: true, message: message, detail: detail, needsFullDiskAccess: false)
+        ActionOutcome(success: true, message: message, detail: detail, needsFullDiskAccess: false, needsHelperSetup: false)
     }
 
-    static func failure(_ message: String, detail: String = "", needsFullDiskAccess: Bool = false) -> ActionOutcome {
-        ActionOutcome(success: false, message: message, detail: detail, needsFullDiskAccess: needsFullDiskAccess)
+    static func failure(
+        _ message: String,
+        detail: String = "",
+        needsFullDiskAccess: Bool = false,
+        needsHelperSetup: Bool = false
+    ) -> ActionOutcome {
+        ActionOutcome(
+            success: false,
+            message: message,
+            detail: detail,
+            needsFullDiskAccess: needsFullDiskAccess,
+            needsHelperSetup: needsHelperSetup
+        )
     }
 }
 
@@ -35,30 +48,32 @@ struct MountService: Sendable {
             return .failure("Device node tidak valid: \(volume.deviceNode)")
         }
         let mountPoint = volume.candidateMountPoint
-        let script: String
-        if readOnly {
-            script = ScriptBuilder.mountReadOnly(
-                volume: volume,
-                ntfs3gPath: ntfs3gPath,
-                mountPoint: mountPoint,
-                backend: backend,
-                fuseTLibraryPath: fuseTLibraryPath
-            )
-        } else {
-            script = ScriptBuilder.mountReadWrite(
-                volume: volume,
-                ntfs3gPath: ntfs3gPath,
-                mountPoint: mountPoint,
-                backend: backend,
-                fuseTLibraryPath: fuseTLibraryPath,
-                removeHiberfile: removeHiberfile
-            )
-        }
-        let result = PrivilegedRunner.runAsAdmin(script)
 
-        if PrivilegedRunner.isCancelled(result) {
-            return .failure("Dibatalkan oleh pengguna.")
+        var args = [
+            "mount",
+            readOnly ? "ro" : "rw",
+            volume.deviceNode,
+            volume.wholeDisk,
+            mountPoint,
+            volume.volumeName,
+            ntfs3gPath
+        ]
+        if backend == .fuseT, let library = fuseTLibraryPath {
+            args += ["--fuse-t", library]
         }
+        if removeHiberfile {
+            args.append("--remove-hiberfile")
+        }
+
+        let result = PrivilegedRunner.runAsRoot(args)
+        if !PrivilegedRunner.isInstalled() || PrivilegedRunner.needsInstall(result) {
+            return .failure(
+                "Akses privileged belum disiapkan.",
+                detail: "Jalankan \"Siapkan akses\" sekali (minta password admin), setelah itu mount berjalan tanpa prompt.",
+                needsHelperSetup: true
+            )
+        }
+
         if result.stdout.contains(ScriptBuilder.okMarker) {
             let mode = readOnly ? "read-only" : "read-write"
             return .ok(
@@ -78,7 +93,7 @@ struct MountService: Sendable {
             detail = ProcessRunner.tail(ofFileAt: mountLogPath, lines: 20)
         }
 
-        let hints = MountService.diagnose(text: detail)
+        let hints = MountService.diagnose(text: detail, ntfs3gPath: ntfs3gPath)
         let full = [detail, hints.advice].filter { !$0.isEmpty }.joined(separator: "\n\n")
         return .failure("Gagal mount.", detail: full, needsFullDiskAccess: hints.needsFullDiskAccess)
     }
@@ -89,38 +104,47 @@ struct MountService: Sendable {
     }
 
     /// Mengubah pesan mentah ntfs-3g menjadi saran yang bisa ditindak.
-    static func diagnose(text: String) -> Diagnosis {
+    static func diagnose(text: String, ntfs3gPath: String? = nil) -> Diagnosis {
         let lower = text.lowercased()
-        let eperm = text.contains("Operation not permitted")
-        let hibernated = lower.contains("hibernat") || lower.contains("unsafe state")
+        // `Operation not permitted` di sini asalnya dari open() atas /dev/disk yang
+        // ditolak macOS (TCC), walau proses berjalan sebagai root.
+        let deviceAccessDenied = text.contains("Operation not permitted")
+        // ntfs-3g selalu menempelkan saran "unsafe state" setiap kali gagal mount —
+        // termasuk ketika gagalnya cuma karena /dev/disk tidak bisa dibuka. Jadi hint
+        // hibernasi baru bermakna kalau device-nya memang sempat terbaca.
+        let hibernatedHint = (lower.contains("hibernat") || lower.contains("unsafe state")) && !deviceAccessDenied
 
         var parts: [String] = []
-        if eperm {
+        if deviceAccessDenied {
+            let tool = ntfs3gPath ?? "/usr/local/bin/ntfs-3g"
             parts.append("""
             ⚠️ macOS memblokir akses ke /dev/disk (TCC "Full Disk Access"), bahkan sebagai root.
             Buka System Settings → Privacy & Security → Full Disk Access, lalu tambahkan:
-              • /opt/homebrew/bin/ntfs-3g
+              • \(tool)
               • /bin/bash
-            (dan aplikasi Wijaya). Setelah itu jalankan mount lagi.
+              • aplikasi Wijaya
+            Kalau semuanya sudah terdaftar tapi masih ditolak — khasnya mount pertama berhasil lalu
+            mount/unmount berikutnya gagal — reset izin Wijaya lalu jalankan mount lagi:
+              tccutil reset SystemPolicyAllFiles dev.mieky.wijaya
             """)
         }
-        if hibernated {
+        if hibernatedHint {
             parts.append("""
             ⚠️ NTFS dalam keadaan "hibernated" (Windows Fast Startup / tidak di-shutdown penuh).
             Solusi: boot ke Windows → matikan Fast Startup → Shutdown penuh (bukan Restart/Hibernate).
             Alternatif cepat: tombol "Hapus hiberfil & mount" (membuang sesi Windows yang ter-hibernate).
             """)
         }
-        return Diagnosis(needsFullDiskAccess: eperm, advice: parts.joined(separator: "\n\n"))
+        return Diagnosis(needsFullDiskAccess: deviceAccessDenied, advice: parts.joined(separator: "\n\n"))
     }
 
     func unmount(_ volume: Volume) -> ActionOutcome {
         guard ScriptBuilder.isValidDeviceNode(volume.deviceNode) else {
             return .failure("Device node tidak valid: \(volume.deviceNode)")
         }
-        let result = PrivilegedRunner.runAsAdmin(ScriptBuilder.unmount(volume: volume))
-        if PrivilegedRunner.isCancelled(result) {
-            return .failure("Dibatalkan oleh pengguna.")
+        let result = PrivilegedRunner.runAsRoot(["unmount", volume.deviceNode, volume.candidateMountPoint])
+        if !PrivilegedRunner.isInstalled() || PrivilegedRunner.needsInstall(result) {
+            return helperSetupRequired()
         }
         if result.succeeded {
             return .ok("\(volume.displayName) berhasil di-unmount.", detail: result.stdout)
@@ -132,9 +156,9 @@ struct MountService: Sendable {
         guard ScriptBuilder.isValidWholeDisk(volume.wholeDisk) else {
             return .failure("Nama disk tidak valid: \(volume.wholeDisk)")
         }
-        let result = PrivilegedRunner.runAsAdmin(ScriptBuilder.eject(volume: volume))
-        if PrivilegedRunner.isCancelled(result) {
-            return .failure("Dibatalkan oleh pengguna.")
+        let result = PrivilegedRunner.runAsRoot(["eject", volume.wholeDisk, volume.candidateMountPoint])
+        if !PrivilegedRunner.isInstalled() || PrivilegedRunner.needsInstall(result) {
+            return helperSetupRequired()
         }
         if result.succeeded {
             return .ok("\(volume.displayName) berhasil di-eject. Aman untuk dicabut.", detail: result.stdout)
@@ -149,14 +173,22 @@ struct MountService: Sendable {
         guard ScriptBuilder.isValidDeviceNode(volume.deviceNode) else {
             return .failure("Device node tidak valid: \(volume.deviceNode)")
         }
-        let result = PrivilegedRunner.runAsAdmin(ScriptBuilder.repair(volume: volume, ntfsfixPath: ntfsfixPath))
-        if PrivilegedRunner.isCancelled(result) {
-            return .failure("Dibatalkan oleh pengguna.")
+        let result = PrivilegedRunner.runAsRoot(["repair", volume.deviceNode, ntfsfixPath])
+        if !PrivilegedRunner.isInstalled() || PrivilegedRunner.needsInstall(result) {
+            return helperSetupRequired()
         }
         if result.succeeded {
             return .ok("Perbaikan selesai untuk \(volume.displayName).", detail: combine(result))
         }
         return .failure("Perbaikan gagal.", detail: combine(result))
+    }
+
+    private func helperSetupRequired() -> ActionOutcome {
+        .failure(
+            "Akses privileged belum disiapkan.",
+            detail: "Jalankan \"Siapkan akses\" sekali (minta password admin), setelah itu operasi berjalan tanpa prompt.",
+            needsHelperSetup: true
+        )
     }
 
     private func combine(_ result: ProcessResult) -> String {

@@ -11,6 +11,10 @@ struct ContentView: View {
                 SetupBanner(status: vm.fuseStatus)
                 Divider()
             }
+            if !vm.helperReady {
+                helperBanner
+                Divider()
+            }
             if vm.needsFullDiskAccess {
                 GuidanceBanner(
                     title: "Akses disk diblokir macOS (Full Disk Access)",
@@ -19,7 +23,10 @@ struct ContentView: View {
                         "System Settings → Privacy & Security → Full Disk Access, tambahkan:",
                         "  • \(vm.fuseStatus.ntfs3gPath ?? "/usr/local/bin/ntfs-3g")",
                         "  • /bin/bash",
-                        "  (dan aplikasi Wijaya)"
+                        "  • aplikasi Wijaya",
+                        "Masih ditolak padahal sudah terdaftar (mount ke-1 berhasil, berikutnya gagal)?",
+                        "Reset izinnya lalu jalankan mount lagi:",
+                        "  tccutil reset SystemPolicyAllFiles dev.mieky.wijaya"
                     ]
                 )
                 Divider()
@@ -81,6 +88,32 @@ struct ContentView: View {
         }
         .disabled(backends.count < 2)
         .help("Pilih backend FUSE (macFUSE atau FUSE-T)")
+    }
+
+    private var helperBanner: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "lock.open.fill")
+                .foregroundStyle(.blue)
+                .font(.title2)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Siapkan akses privileged (sekali)")
+                    .font(.headline)
+                Text("Mount/unmount butuh hak root. Sekali klik di sini (masukkan password admin), lalu semua operasi berjalan tanpa prompt.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            if vm.helperBusy {
+                ProgressView().controlSize(.small)
+            } else {
+                Button("Siapkan akses") { vm.installHelper() }
+            }
+        }
+        .padding(12)
+        .background(Color.blue.opacity(0.10))
     }
 
     private var volumeList: some View {

@@ -1,16 +1,12 @@
 import Foundation
 
-/// Memasang/menghapus auto-mount latar belakang:
-///  - skrip mount  -> /usr/local/libexec/wijaya-automount.sh (root)
-///  - aturan sudo  -> /etc/sudoers.d/wijaya-automount (NOPASSWD, root)
-///  - LaunchAgent  -> ~/Library/LaunchAgents/com.mieky.wijaya.automount.plist (user)
+/// Memasang/menghapus auto-mount latar belakang.
 ///
-/// LaunchAgent memanggil `sudo -n <skrip>` saat /Volumes berubah, sehingga disk NTFS
-/// otomatis di-mount read-write tanpa prompt, di konteks sesi user.
+/// Auto-mount memakai root helper yang sama dengan operasi manual
+/// (`/usr/local/libexec/wijaya-ntfsctl automount`), dipanggil lewat `sudo -n`.
+/// Saat mengaktifkan, helper + aturan sudoers dipasang sekali (minta password admin).
 struct AutoMountInstaller {
     static let label = "com.mieky.wijaya.automount"
-    static let scriptInstallPath = "/usr/local/libexec/wijaya-automount.sh"
-    static let sudoersPath = "/etc/sudoers.d/wijaya-automount"
 
     private var uid: uid_t { getuid() }
     private var userName: String { NSUserName() }
@@ -26,8 +22,20 @@ struct AutoMountInstaller {
     }
 
     func enable() -> ActionOutcome {
-        guard let bundledScript = Bundle.main.path(forResource: "wijaya-automount", ofType: "sh") else {
-            return .failure("Skrip auto-mount tidak ditemukan di dalam bundle aplikasi.")
+        guard let bundledHelper = Bundle.main.path(forResource: "wijaya-ntfsctl", ofType: "sh") else {
+            return .failure("Helper wijaya-ntfsctl tidak ditemukan di dalam bundle aplikasi.")
+        }
+
+        // Pasang helper + sudoers sekali (minta password admin).
+        let install = PrivilegedRunner.install(bundledHelperPath: bundledHelper, user: userName)
+        if PrivilegedRunner.isCancelled(install) {
+            return .failure("Dibatalkan oleh pengguna.")
+        }
+        guard install.stdout.contains(ScriptBuilder.okMarker) else {
+            let detail = [install.stdout, install.stderr]
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }.joined(separator: "\n")
+            return .failure("Gagal memasang helper sistem.", detail: detail)
         }
 
         do {
@@ -35,18 +43,6 @@ struct AutoMountInstaller {
             try plistContents().write(to: plistURL, atomically: true, encoding: .utf8)
         } catch {
             return .failure("Gagal menulis LaunchAgent.", detail: error.localizedDescription)
-        }
-
-        let result = PrivilegedRunner.runAsAdmin(adminInstallScript(bundledScriptPath: bundledScript, user: userName))
-        if PrivilegedRunner.isCancelled(result) {
-            try? FileManager.default.removeItem(at: plistURL)
-            return .failure("Dibatalkan oleh pengguna.")
-        }
-        guard result.stdout.contains(ScriptBuilder.okMarker) else {
-            try? FileManager.default.removeItem(at: plistURL)
-            let detail = [result.stdout, result.stderr].map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-                .filter { !$0.isEmpty }.joined(separator: "\n")
-            return .failure("Gagal memasang komponen sistem (sudoers/skrip).", detail: detail)
         }
 
         _ = ProcessRunner.run("/bin/launchctl", ["bootout", "gui/\(uid)/\(Self.label)"])
@@ -62,11 +58,6 @@ struct AutoMountInstaller {
         _ = ProcessRunner.run("/bin/launchctl", ["bootout", "gui/\(uid)/\(Self.label)"])
         _ = ProcessRunner.run("/bin/launchctl", ["unload", "-w", plistURL.path])
         try? FileManager.default.removeItem(at: plistURL)
-
-        let result = PrivilegedRunner.runAsAdmin(adminUninstallScript())
-        if PrivilegedRunner.isCancelled(result) {
-            return .failure("Auto-mount dihentikan, tapi gagal membersihkan komponen sistem (dibatalkan).")
-        }
         return .ok("Auto-mount dimatikan.")
     }
 
@@ -84,7 +75,8 @@ struct AutoMountInstaller {
             <array>
                 <string>/usr/bin/sudo</string>
                 <string>-n</string>
-                <string>\(Self.scriptInstallPath)</string>
+                <string>\(PrivilegedRunner.helperInstallPath)</string>
+                <string>automount</string>
             </array>
             <key>RunAtLoad</key>
             <true/>
@@ -98,28 +90,6 @@ struct AutoMountInstaller {
             <string>/tmp/wijaya-automount.err</string>
         </dict>
         </plist>
-        """
-    }
-
-    private func adminInstallScript(bundledScriptPath: String, user: String) -> String {
-        let rule = "\(user) ALL=(root) NOPASSWD: \(Self.scriptInstallPath)"
-        return """
-        set -e
-        /bin/mkdir -p /usr/local/libexec
-        /usr/bin/install -m 0755 \(ScriptBuilder.shellQuote(bundledScriptPath)) \(Self.scriptInstallPath)
-        /usr/sbin/chown root:wheel \(Self.scriptInstallPath)
-        /bin/echo \(ScriptBuilder.shellQuote(rule)) > \(Self.sudoersPath)
-        /usr/sbin/chown root:wheel \(Self.sudoersPath)
-        /bin/chmod 0440 \(Self.sudoersPath)
-        /usr/sbin/visudo -cf \(Self.sudoersPath)
-        echo \(ScriptBuilder.okMarker)
-        """
-    }
-
-    private func adminUninstallScript() -> String {
-        """
-        /bin/rm -f \(Self.sudoersPath) \(Self.scriptInstallPath)
-        echo \(ScriptBuilder.okMarker)
         """
     }
 }

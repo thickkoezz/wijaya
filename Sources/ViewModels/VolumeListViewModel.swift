@@ -10,6 +10,8 @@ final class VolumeListViewModel: ObservableObject {
     @Published private(set) var isRefreshing = false
     @Published var selectedBackend: FuseBackend?
     @Published private(set) var needsFullDiskAccess = false
+    @Published private(set) var helperReady = true
+    @Published private(set) var helperBusy = false
     @Published private(set) var autoMountEnabled = false
     @Published private(set) var autoMountBusy = false
 
@@ -20,6 +22,7 @@ final class VolumeListViewModel: ObservableObject {
         fuseStatus = FuseDiagnostics.detect()
         selectedBackend = fuseStatus.recommendedBackend
         autoMountEnabled = autoMount.isEnabled()
+        helperReady = PrivilegedRunner.isInstalled()
         append(.info, "Wijaya siap. ntfs-3g: \(fuseStatus.ntfs3gPath ?? "tidak ditemukan")")
         if let backend = selectedBackend {
             append(.info, "Backend FUSE: \(backend.displayName)")
@@ -34,6 +37,40 @@ final class VolumeListViewModel: ObservableObject {
         append(.info, "Backend diganti ke \(backend.displayName).")
     }
 
+    /// Pasang root helper + aturan sudoers sekali (minta password admin). Setelah ini
+    /// operasi privileged berjalan lewat `sudo -n` tanpa prompt.
+    func installHelper() {
+        guard !helperBusy else { return }
+        guard let bundled = Bundle.main.path(forResource: "wijaya-ntfsctl", ofType: "sh") else {
+            append(.error, "Helper wijaya-ntfsctl tidak ditemukan di dalam bundle aplikasi.")
+            return
+        }
+        let user = NSUserName()
+        helperBusy = true
+        append(.info, "Menyiapkan akses privileged (sekali, minta password admin)…")
+        Task {
+            let outcome = await Task.detached(priority: .userInitiated) { () -> ActionOutcome in
+                let result = PrivilegedRunner.install(bundledHelperPath: bundled, user: user)
+                if PrivilegedRunner.isCancelled(result) {
+                    return .failure("Dibatalkan oleh pengguna.")
+                }
+                if result.stdout.contains(ScriptBuilder.okMarker) {
+                    return .ok("Akses privileged siap — mount berikutnya tanpa prompt.")
+                }
+                let detail = [result.stdout, result.stderr]
+                    .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                    .filter { !$0.isEmpty }.joined(separator: "\n")
+                return .failure("Gagal menyiapkan akses privileged.", detail: detail)
+            }.value
+            self.helperReady = PrivilegedRunner.isInstalled()
+            self.helperBusy = false
+            self.append(outcome.success ? .success : .error, outcome.message)
+            if !outcome.detail.isEmpty {
+                self.append(outcome.success ? .info : .error, outcome.detail)
+            }
+        }
+    }
+
     func toggleAutoMount() {
         guard !autoMountBusy else { return }
         let installer = autoMount
@@ -45,6 +82,7 @@ final class VolumeListViewModel: ObservableObject {
                 enabling ? installer.enable() : installer.disable()
             }.value
             self.autoMountEnabled = installer.isEnabled()
+            self.helperReady = PrivilegedRunner.isInstalled()
             self.autoMountBusy = false
             self.append(outcome.success ? .success : .error, outcome.message)
             if !outcome.detail.isEmpty {
@@ -99,13 +137,16 @@ final class VolumeListViewModel: ObservableObject {
         }
         guard busyVolumeID == nil else { return }
         busyVolumeID = volume.id
-        append(.info, "\(volume.displayName): minta hak admin untuk \(action)…")
+        append(.info, "\(volume.displayName): menjalankan \(action)…")
 
         Task {
             let outcome = await Task.detached(priority: .userInitiated) { work(service) }.value
             self.busyVolumeID = nil
             if outcome.needsFullDiskAccess {
                 self.needsFullDiskAccess = true
+            }
+            if outcome.needsHelperSetup {
+                self.helperReady = PrivilegedRunner.isInstalled()
             }
             self.append(outcome.success ? .success : .error, outcome.message)
             if !outcome.detail.isEmpty {

@@ -107,6 +107,8 @@ Wijaya $VERSION — NTFS baca-tulis untuk macOS
      /usr/local/bin/ntfs-3g
      /bin/bash
      Wijaya.app
+   (Installer sudah memasang helper privileged + aturan sudoers,
+    jadi mount/unmount berjalan tanpa prompt password.)
 
 4. Buka Wijaya -> klik "Mount Read-Write" pada disk NTFS.
    Selalu klik "Eject" sebelum mencabut disk.

@@ -11,9 +11,28 @@ for f in /usr/local/lib/libntfs-3g*.dylib; do
   /bin/chmod 0644 "$f" 2>/dev/null || true
 done
 
-# Buka panel Full Disk Access untuk memudahkan pemberian izin.
+# Pasang root helper + aturan sudoers NOPASSWD (mount/unmount tanpa prompt).
+HELPER_SRC="/Applications/Wijaya.app/Contents/Resources/wijaya-ntfsctl.sh"
+HELPER_DST="/usr/local/libexec/wijaya-ntfsctl"
+SUDOERS="/etc/sudoers.d/wijaya-ntfsctl"
 CONSOLE_USER=$(/usr/bin/stat -f '%Su' /dev/console 2>/dev/null || true)
+
+if [ -f "$HELPER_SRC" ]; then
+  /bin/mkdir -p /usr/local/libexec
+  /usr/bin/install -m 0755 -o root -g wheel "$HELPER_SRC" "$HELPER_DST"
+fi
+
 if [ -n "$CONSOLE_USER" ] && [ "$CONSOLE_USER" != "root" ] && [ "$CONSOLE_USER" != "loginwindow" ]; then
+  if [ -x "$HELPER_DST" ]; then
+    /bin/echo "$CONSOLE_USER ALL=(root) NOPASSWD: $HELPER_DST" > "$SUDOERS"
+    /usr/sbin/chown root:wheel "$SUDOERS"
+    /bin/chmod 0440 "$SUDOERS"
+    /usr/sbin/visudo -cf "$SUDOERS" >/dev/null 2>&1 || /bin/rm -f "$SUDOERS"
+  fi
+  # Bersihkan komponen auto-mount lama (kini digabung ke helper).
+  /bin/rm -f /etc/sudoers.d/wijaya-automount /usr/local/libexec/wijaya-automount.sh 2>/dev/null || true
+
+  # Buka panel Full Disk Access untuk memudahkan pemberian izin.
   /usr/bin/su -l "$CONSOLE_USER" -c \
     '/usr/bin/open "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension?Privacy_AllFiles"' \
     >/dev/null 2>&1 || true

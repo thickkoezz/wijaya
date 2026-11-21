@@ -213,8 +213,10 @@ Isi paket:
 | `/usr/local/bin/ntfs-3g` | driver ntfs-3g (build FUSE-T) |
 | `/usr/local/lib/libntfs-3g.*.dylib` | runtime ntfs-3g |
 
-Skrip `postinstall` memperbaiki permission driver dan **membuka panel Full Disk Access**
-agar pengguna mudah memberi izin. Prasyarat bagi pengguna: **FUSE-T** sudah terpasang.
+Skrip `postinstall` memperbaiki permission driver, memasang root helper
+(`/usr/local/libexec/wijaya-ntfsctl`) beserta aturan sudoers-nya (jadi mount/unmount tanpa prompt
+password), dan **membuka panel Full Disk Access** agar pengguna mudah memberi izin. Prasyarat bagi
+pengguna: **FUSE-T** sudah terpasang.
 
 Memasang:
 ```bash
@@ -265,9 +267,13 @@ bash scripts/release.sh    # bangun paket + cetak sha256 & potongan cask
 ## Cara pakai
 
 1. Colok disk NTFS → muncul sebagai chip **"Read-Only (macOS)"**.
-2. Klik **Mount Read-Write** → masukkan password admin → chip jadi **"Read-Write"**.
-3. Tombol **⋯** memberi opsi: **Hapus hiberfil & mount** (NTFS hibernated) dan **Mount Read-Only**.
-4. **Sebelum mencabut: klik Eject atau Unmount** (FUSE-T punya write cache — cabut tanpa
+2. **Sekali saja:** klik **Siapkan akses** di banner → masukkan password admin **sekali**. Ini
+   memasang root helper (`/usr/local/libexec/wijaya-ntfsctl`) + aturan sudoers yang sempit, sehingga
+   mount/unmount/eject berikutnya berjalan **tanpa prompt password**. (Installer `.pkg` melakukan
+   langkah ini otomatis.)
+3. Klik **Mount Read-Write** → chip jadi **"Read-Write"**.
+4. Tombol **⋯** memberi opsi: **Hapus hiberfil & mount** (NTFS hibernated) dan **Mount Read-Only**.
+5. **Sebelum mencabut: klik Eject atau Unmount** (FUSE-T punya write cache — cabut tanpa
    eject berisiko korupsi NTFS).
 
 ### Auto-mount (latar belakang, tanpa prompt)
@@ -277,17 +283,19 @@ admin sekali). Ini memasang:
 
 | Komponen | Path | Peran |
 |---|---|---|
-| skrip mount | `/usr/local/libexec/wijaya-automount.sh` | mount NTFS RW via ntfs-3g |
-| aturan sudo | `/etc/sudoers.d/wijaya-automount` | `NOPASSWD` **hanya** untuk skrip itu |
-| LaunchAgent | `~/Library/LaunchAgents/com.mieky.wijaya.automount.plist` | `WatchPaths=/Volumes` |
+| root helper | `/usr/local/libexec/wijaya-ntfsctl` | operasi privileged: mount/unmount/eject/repair/automount |
+| aturan sudo | `/etc/sudoers.d/wijaya-ntfsctl` | `NOPASSWD` **hanya** untuk helper itu |
+| LaunchAgent | `~/Library/LaunchAgents/com.mieky.wijaya.automount.plist` | jalankan `sudo -n … wijaya-ntfsctl automount`, `WatchPaths=/Volumes` |
 
 Efeknya: begitu disk NTFS dicolok, otomatis di-mount **read-write** tanpa klik & tanpa password,
 dan tetap bekerja walau aplikasi ditutup. Mematikannya: klik tombol yang sama (ke `OFF`) —
-semua komponen di atas dibersihkan.
+LaunchAgent dihapus (helper yang dipakai bersama tetap ada, karena mount/unmount manual juga
+memakainya).
 
-> **Keamanan:** aturan sudo hanya mengizinkan satu skrip spesifik itu berjalan sebagai root —
-> bukan akses `sudo` bebas. Skripnya milik root (`root:wheel`, mode 0755) dan bisa kamu tinjau
-> di `Sources/Resources/wijaya-automount.sh`.
+> **Keamanan:** aturan sudo hanya mengizinkan **satu helper itu** berjalan sebagai root — bukan
+> akses `sudo` bebas — dan helper hanya menerima subcommand tetap dengan argumen tervalidasi (tidak
+> ada skrip arbitrer). Helper milik root (`root:wheel`, mode 0755) dan bisa kamu tinjau di
+> `Sources/Resources/wijaya-ntfsctl.sh`.
 
 Cek aktivitas: `log show --last 5m --predicate 'eventMessage CONTAINS "wijaya-automount"'`.
 
@@ -296,8 +304,11 @@ Cek aktivitas: `log show --last 5m --predicate 'eventMessage CONTAINS "wijaya-au
 ## Troubleshooting
 
 - **`Operation not permitted` saat mount** — belum ada Full Disk Access untuk
-  `/usr/local/bin/ntfs-3g` dan `/bin/bash`. Ulangi Langkah 5. (Aplikasi akan menampilkan
-  banner merah + tombol buka Settings saat mendeteksi ini.)
+  `/usr/local/bin/ntfs-3g`, `/bin/bash`, dan aplikasi Wijaya. Ulangi Langkah 5. Kalau semuanya sudah
+  terdaftar tapi tetap gagal — khasnya mount pertama berhasil lalu setiap mount setelah unmount
+  gagal — record TCC macOS sudah "basi". Reset lalu mount lagi:
+  `tccutil reset SystemPolicyAllFiles dev.mieky.wijaya`. (Aplikasi akan menampilkan banner merah +
+  tombol buka Settings saat mendeteksi ini.)
 - **`unsafe state` / "hibernated"** — drive belum di-shutdown bersih dari Windows (Fast
   Startup). Ideal: boot Windows → matikan Fast Startup → **Shutdown penuh**. Cepat: tombol
   **Hapus hiberfil & mount** (⚠️ membuang sesi Windows yang ter-hibernate).
@@ -368,17 +379,24 @@ Backend dipilih otomatis (FUSE-T bila macFUSE belum siap); bisa diganti dari men
 Sources/
   WijayaApp.swift              # @main + entry CLI --scan
   Models/Volume.swift          # Volume + FileSystemKind + MountState
+  Resources/wijaya-ntfsctl.sh  # root helper → /usr/local/libexec/wijaya-ntfsctl
   Services/
     DiskScanner.swift          # diskutil list/info -plist + tabel mount → [Volume]
     FuseDiagnostics.swift      # deteksi ntfs-3g, macFUSE, FUSE-T, linkage libfuse-t
-    ScriptBuilder.swift        # susun skrip root (shell-quote aman) + mode ro/rw
-    PrivilegedRunner.swift     # osascript 'with administrator privileges'
+    ScriptBuilder.swift        # validasi argumen + shell quoting + marker
+    PrivilegedRunner.swift     # operasi root via `sudo -n` helper + pasang sekali
     MountService.swift         # mount rw/ro/hapus-hiberfil / unmount / eject / repair
+    AutoMountInstaller.swift   # LaunchAgent → `sudo -n … wijaya-ntfsctl automount`
     DiagnosticsCLI.swift       # mode headless --scan
   ViewModels/VolumeListViewModel.swift
   Views/                       # ContentView, VolumeRow, SetupBanner, GuidanceBanner, LogPane
-Tests/WijayaTests/             # 22 unit test (quoting, parser, diagnosis)
+Tests/WijayaTests/             # 24 unit test (quoting, parser, diagnosis, deteksi helper)
 ```
+
+Alur privileged: aplikasi memanggil `sudo -n /usr/local/libexec/wijaya-ntfsctl <subcommand>`
+(aturan sudoers NOPASSWD hanya untuk path itu). Proses root adalah anak langsung Wijaya.app,
+sehingga TCC macOS menempelkan akses `/dev/disk` ke aplikasi — jalur
+`osascript … with administrator privileges` yang tidak konsisten tidak lagi dipakai untuk operasi disk.
 
 ## Referensi
 

@@ -47,8 +47,14 @@ LANGKAH WAJIB BERIKUTNYA — beri izin Full Disk Access:
     [+] lalu tekan Cmd+Shift+G, tambahkan:
         /usr/local/bin/ntfs-3g
         /bin/bash
-    ...dan aplikasi Wijaya (Wijaya.app).
+        Wijaya.app
 
 Tanpa izin ini, mount gagal dengan "Operation not permitted"
 (macOS memblokir akses /dev/disk lewat TCC, bahkan sebagai root).
+
+Mount/unmount dijalankan lewat root helper (dipasang aplikasi saat pertama kali
+klik "Siapkan akses", atau otomatis oleh installer .pkg), jadi tanpa prompt password.
+
+Kalau izinnya sudah ada tapi mount ke-2 dst tetap ditolak, reset record TCC:
+  tccutil reset SystemPolicyAllFiles dev.mieky.wijaya
 EOF

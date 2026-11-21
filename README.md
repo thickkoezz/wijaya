@@ -213,8 +213,10 @@ Package contents:
 | `/usr/local/bin/ntfs-3g` | ntfs-3g driver (FUSE-T build) |
 | `/usr/local/lib/libntfs-3g.*.dylib` | ntfs-3g runtime |
 
-The `postinstall` script fixes the driver's permissions and **opens the Full Disk Access pane** so
-users can grant permission easily. User prerequisite: **FUSE-T** already installed.
+The `postinstall` script fixes the driver's permissions, installs the root helper
+(`/usr/local/libexec/wijaya-ntfsctl`) plus its sudoers rule (so mount/unmount need no password
+prompt), and **opens the Full Disk Access pane** so users can grant permission easily. User
+prerequisite: **FUSE-T** already installed.
 
 Installing:
 ```bash
@@ -266,9 +268,13 @@ bash scripts/release.sh    # builds the package + prints sha256 & a cask snippet
 ## Usage
 
 1. Plug in an NTFS disk → it appears with the **"Read-Only (macOS)"** chip.
-2. Click **Mount Read-Write** → enter your admin password → the chip becomes **"Read-Write"**.
-3. The **⋯** button offers: **Remove hiberfile & mount** (hibernated NTFS) and **Mount Read-Only**.
-4. **Before unplugging: click Eject or Unmount** (FUSE-T has a write cache — pulling the disk
+2. **First time only:** click **Prepare access** in the banner → enter your admin password **once**.
+   This installs a small root helper (`/usr/local/libexec/wijaya-ntfsctl`) + a narrow sudoers rule,
+   so every later mount/unmount/eject runs with **no password prompt**. (The `.pkg` installer does
+   this step for you.)
+3. Click **Mount Read-Write** → the chip becomes **"Read-Write"**.
+4. The **⋯** button offers: **Remove hiberfile & mount** (hibernated NTFS) and **Mount Read-Only**.
+5. **Before unplugging: click Eject or Unmount** (FUSE-T has a write cache — pulling the disk
    without ejecting risks corrupting the NTFS).
 
 ### Auto-mount (background, no prompt)
@@ -278,17 +284,19 @@ your admin password once). This installs:
 
 | Component | Path | Role |
 |---|---|---|
-| mount script | `/usr/local/libexec/wijaya-automount.sh` | mounts NTFS RW via ntfs-3g |
-| sudo rule | `/etc/sudoers.d/wijaya-automount` | `NOPASSWD` for **that script only** |
-| LaunchAgent | `~/Library/LaunchAgents/com.mieky.wijaya.automount.plist` | `WatchPaths=/Volumes` |
+| root helper | `/usr/local/libexec/wijaya-ntfsctl` | privileged ops: mount/unmount/eject/repair/automount |
+| sudo rule | `/etc/sudoers.d/wijaya-ntfsctl` | `NOPASSWD` for **that helper only** |
+| LaunchAgent | `~/Library/LaunchAgents/com.mieky.wijaya.automount.plist` | runs `sudo -n … wijaya-ntfsctl automount`, `WatchPaths=/Volumes` |
 
 The effect: as soon as an NTFS disk is plugged in, it's automatically mounted **read-write** with no
 clicks and no password, and it keeps working even if the app is closed. To turn it off: click the
-same button (to `OFF`) — all the components above are removed.
+same button (to `OFF`) — the LaunchAgent is removed (the shared helper stays, since manual
+mount/unmount use it too).
 
-> **Security:** the sudo rule only allows that one specific script to run as root — not free `sudo`
-> access. The script is owned by root (`root:wheel`, mode 0755) and you can review it at
-> `Sources/Resources/wijaya-automount.sh`.
+> **Security:** the sudo rule only allows **that one helper** to run as root — not free `sudo`
+> access — and the helper accepts only fixed subcommands with validated arguments (no arbitrary
+> scripts). The helper is owned by root (`root:wheel`, mode 0755) and you can review it at
+> `Sources/Resources/wijaya-ntfsctl.sh`.
 
 Check activity: `log show --last 5m --predicate 'eventMessage CONTAINS "wijaya-automount"'`.
 
@@ -297,8 +305,11 @@ Check activity: `log show --last 5m --predicate 'eventMessage CONTAINS "wijaya-a
 ## Troubleshooting
 
 - **`Operation not permitted` when mounting** — Full Disk Access hasn't been granted to
-  `/usr/local/bin/ntfs-3g` and `/bin/bash`. Repeat Step 5. (The app shows a red banner + a button
-  to open Settings when it detects this.)
+  `/usr/local/bin/ntfs-3g`, `/bin/bash` and Wijaya.app. Repeat Step 5. If they're all listed and it
+  *still* fails — typically the **first** mount works and every mount after an unmount fails — the
+  macOS TCC record has gone stale. Reset it and mount again:
+  `tccutil reset SystemPolicyAllFiles dev.mieky.wijaya`. (The app shows a red banner + a button to
+  open Settings when it detects this.)
 - **`unsafe state` / "hibernated"** — the drive wasn't shut down cleanly from Windows (Fast
   Startup). Ideal fix: boot Windows → disable Fast Startup → **full Shutdown**. Quick fix: the
   **Remove hiberfile & mount** button (⚠️ discards the hibernated Windows session).
@@ -369,17 +380,24 @@ toolbar menu.
 Sources/
   WijayaApp.swift              # @main + --scan CLI entry
   Models/Volume.swift          # Volume + FileSystemKind + MountState
+  Resources/wijaya-ntfsctl.sh  # root helper → /usr/local/libexec/wijaya-ntfsctl
   Services/
     DiskScanner.swift          # diskutil list/info -plist + mount table → [Volume]
     FuseDiagnostics.swift      # detect ntfs-3g, macFUSE, FUSE-T, libfuse-t linkage
-    ScriptBuilder.swift        # build the root script (safe shell quoting) + ro/rw modes
-    PrivilegedRunner.swift     # osascript 'with administrator privileges'
+    ScriptBuilder.swift        # argument validation + shell quoting + markers
+    PrivilegedRunner.swift     # root ops via `sudo -n` helper + one-time install
     MountService.swift         # mount rw/ro/remove-hiberfile / unmount / eject / repair
+    AutoMountInstaller.swift   # LaunchAgent → `sudo -n … wijaya-ntfsctl automount`
     DiagnosticsCLI.swift       # headless --scan mode
   ViewModels/VolumeListViewModel.swift
   Views/                       # ContentView, VolumeRow, SetupBanner, GuidanceBanner, LogPane
-Tests/WijayaTests/             # 22 unit tests (quoting, parser, diagnosis)
+Tests/WijayaTests/             # 24 unit tests (quoting, parser, diagnosis, helper install)
 ```
+
+Privileged flow: the app invokes `sudo -n /usr/local/libexec/wijaya-ntfsctl <subcommand>` (a
+NOPASSWD sudoers rule for that one path). The root process is a direct child of Wijaya.app, so
+macOS TCC attributes the `/dev/disk` access to the app — the flaky
+`osascript … with administrator privileges` path is no longer used for disk operations.
 
 ## References
 

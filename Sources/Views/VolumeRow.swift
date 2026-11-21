@@ -87,7 +87,7 @@ struct VolumeRow: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.small)
-                .help("Mount volume NTFS ini sebagai read-write (perlu password admin)")
+                .help("Mount volume NTFS ini sebagai read-write (tanpa prompt setelah akses disiapkan)")
 
                 if volume.isNTFS {
                     Menu {

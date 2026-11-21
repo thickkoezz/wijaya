@@ -32,81 +32,13 @@ final class ScriptBuilderTests: XCTestCase {
         XCTAssertFalse(ScriptBuilder.isValidWholeDisk("/dev/disk4"))
     }
 
-    func testMountScriptContainsMarkerAndQuotedName() {
-        let volume = Volume(
-            id: "disk4s1",
-            deviceNode: "/dev/disk4s1",
-            volumeName: "My Passport",
-            fileSystem: .ntfs,
-            totalBytes: 4_000_000_000_000,
-            mountPoint: "/Volumes/My Passport",
-            isReadOnly: true,
-            wholeDisk: "disk4",
-            isExternal: true,
-            mountState: .appleReadOnly
+    func testInstallScriptLocksDownSingleHelperPath() {
+        let script = PrivilegedRunner.installScript(
+            bundledHelperPath: "/Applications/Wijaya.app/Contents/Resources/wijaya-ntfsctl.sh",
+            user: "mieky"
         )
-
-        let script = ScriptBuilder.mountReadWrite(
-            volume: volume,
-            ntfs3gPath: "/opt/homebrew/bin/ntfs-3g",
-            mountPoint: "/Volumes/My Passport"
-        )
-
-        XCTAssertTrue(script.contains("'/dev/disk4s1'"))
-        XCTAssertTrue(script.contains("-o volname='My Passport'"))
-        XCTAssertTrue(script.contains("'/opt/homebrew/bin/ntfs-3g'"))
+        XCTAssertTrue(script.contains("NOPASSWD: /usr/local/libexec/wijaya-ntfsctl"))
+        XCTAssertTrue(script.contains("visudo -cf"))
         XCTAssertTrue(script.contains(ScriptBuilder.okMarker))
-        XCTAssertTrue(script.contains("diskutil unmountDisk force"))
-        XCTAssertFalse(script.contains("DYLD_INSERT_LIBRARIES"))
-        XCTAssertFalse(script.contains("remove_hiberfile"))
-    }
-
-    func testMountScriptWithRemoveHiberfile() {
-        let script = ScriptBuilder.mountReadWrite(
-            volume: sampleVolume(),
-            ntfs3gPath: "/opt/homebrew/bin/ntfs-3g",
-            mountPoint: "/Volumes/My Passport",
-            removeHiberfile: true
-        )
-        XCTAssertTrue(script.contains("-o remove_hiberfile"))
-    }
-
-    func testMountReadOnlyScriptUsesRoAndSkipsWriteTest() {
-        let script = ScriptBuilder.mountReadOnly(
-            volume: sampleVolume(),
-            ntfs3gPath: "/usr/local/bin/ntfs-3g",
-            mountPoint: "/Volumes/My Passport"
-        )
-        XCTAssertTrue(script.contains("-o ro"))
-        XCTAssertFalse(script.contains("wijaya_write_test"))
-    }
-
-    func testMountScriptUsesFuseTInterpositionWhenSelected() {
-        let volume = sampleVolume()
-        let script = ScriptBuilder.mountReadWrite(
-            volume: volume,
-            ntfs3gPath: "/opt/homebrew/bin/ntfs-3g",
-            mountPoint: "/Volumes/My Passport",
-            backend: .fuseT,
-            fuseTLibraryPath: "/usr/local/lib/libfuse-t.dylib"
-        )
-        XCTAssertTrue(script.contains("DYLD_INSERT_LIBRARIES='/usr/local/lib/libfuse-t.dylib'"))
-        XCTAssertTrue(script.contains("DYLD_FORCE_FLAT_NAMESPACE=1"))
-        XCTAssertTrue(script.contains(ScriptBuilder.okMarker))
-    }
-
-    private func sampleVolume() -> Volume {
-        Volume(
-            id: "disk4s1",
-            deviceNode: "/dev/disk4s1",
-            volumeName: "My Passport",
-            fileSystem: .ntfs,
-            totalBytes: 4_000_000_000_000,
-            mountPoint: "/Volumes/My Passport",
-            isReadOnly: true,
-            wholeDisk: "disk4",
-            isExternal: true,
-            mountState: .appleReadOnly
-        )
     }
 }
