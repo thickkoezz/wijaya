@@ -1,10 +1,7 @@
-# Homebrew Cask untuk Wijaya — jalur distribusi GRATIS (tanpa Developer ID).
+# Homebrew Cask untuk Wijaya — jalur distribusi gratis (tanpa Developer ID).
 #
-# Ini TEMPLATE. Ganti USER dan sha256 (lihat `bash scripts/release.sh`).
-# Taruh file ini di repo tap-mu dengan struktur: Casks/wijaya.rb
-#
-# Pengguna lalu cukup:
-#   brew tap USER/wijaya
+# Pasang dari tap:
+#   brew tap thickkoezz/wijaya
 #   brew install --cask wijaya
 #
 # Instal via Homebrew menghindari peringatan Gatekeeper (unduhan tidak diberi
@@ -12,17 +9,17 @@
 
 cask "wijaya" do
   version "1.0"
-  sha256 "REPLACE_WITH_SHA256_OF_DMG"
+  sha256 "2a78b767d5fa4ffee28de14dec76f328362232e8aa3d735fe86f7bea29e64637"
 
-  url "https://github.com/USER/wijaya/releases/download/v#{version}/Wijaya-#{version}.dmg",
-      verified: "github.com/USER/wijaya/"
+  url "https://github.com/thickkoezz/wijaya/releases/download/v#{version}/Wijaya-#{version}.dmg",
+      verified: "github.com/thickkoezz/wijaya/"
   name "Wijaya"
   desc "GUI read-write NTFS for macOS (ntfs-3g + FUSE-T)"
-  homepage "https://github.com/USER/wijaya"
+  homepage "https://github.com/thickkoezz/wijaya"
 
   depends_on macos: ">= :sonoma"
   depends_on arch: :arm64
-  # FUSE-T wajib ada; pasang salah satu (lihat catatan di bawah):
+  # FUSE-T wajib ada:
   #   brew install --cask macos-fuse-t/homebrew-cask/fuse-t
 
   # .dmg berisi installer .pkg yang memasang app + driver ntfs-3g.
