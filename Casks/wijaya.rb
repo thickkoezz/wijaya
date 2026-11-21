@@ -9,7 +9,7 @@
 
 cask "wijaya" do
   version "1.1"
-  sha256 "b05c017bd3ed7cdb74391041b9d78aa24270e402614952872dcd792a6df3b4bf"
+  sha256 "a90f615b21c989aa20946bc9ab8a361367c64be68e8d37a726a8f15d78759e2d"
 
   url "https://github.com/thickkoezz/wijaya/releases/download/v#{version}/Wijaya-#{version}.dmg",
       verified: "github.com/thickkoezz/wijaya/"
