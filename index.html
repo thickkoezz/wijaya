@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wijaya — Tulis ke HDD NTFS dari Mac (gratis & open source)</title>
+<meta name="description" content="Wijaya membuat HDD NTFS bisa dibaca-tulis di macOS. Gratis, open source (MIT), berbasis ntfs-3g + FUSE-T. Tanpa Developer ID berbayar.">
+<meta name="theme-color" content="#0F172A">
+<meta property="og:title" content="Wijaya — Tulis ke HDD NTFS dari Mac">
+<meta property="og:description" content="GUI macOS untuk baca-tulis NTFS. Gratis, open source (MIT). Dibangun di atas ntfs-3g + FUSE-T.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="public/a.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F172A; --card:#1B2336; --primary:#1E293B; --secondary:#334155;
+    --fg:#F8FAFC; --muted:#272F42; --muted-fg:#94A3B8; --border:#475569;
+    --accent:#22C55E; --on-accent:#0F172A; --destructive:#EF4444;
+    --max:1120px; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+  code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+  img{max-width:100%; display:block}
+  :focus-visible{outline:3px solid var(--accent); outline-offset:2px; border-radius:6px}
+
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 20px}
+  header.site{
+    position:sticky; top:0; z-index:50; backdrop-filter:blur(10px);
+    background:rgba(15,23,42,.82); border-bottom:1px solid var(--border);
+  }
+  .bar{display:flex; align-items:center; gap:16px; height:62px}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:600; color:var(--fg)}
+  .brand svg{color:var(--accent)}
+  nav.site{margin-left:auto; display:flex; align-items:center; gap:22px}
+  nav.site a{color:var(--muted-fg); font-size:14px}
+  nav.site a:hover{color:var(--fg); text-decoration:none}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    padding:9px 16px; border-radius:10px; border:1px solid var(--border);
+    background:var(--primary); color:var(--fg); font:inherit; font-size:14px; font-weight:500;
+    transition:background .2s ease, border-color .2s ease, transform .2s ease;
+  }
+  .btn:hover{background:var(--secondary); text-decoration:none}
+  .btn.primary{background:var(--accent); color:var(--on-accent); border-color:var(--accent)}
+  .btn.primary:hover{filter:brightness(1.08)}
+  .skip{position:absolute; left:-9999px}
+  .skip:focus{left:12px; top:12px; background:var(--card); padding:8px 12px; border-radius:8px; z-index:100}
+
+  section{padding:72px 0; border-bottom:1px solid var(--border)}
+  h1{font-size:clamp(30px,5vw,52px); line-height:1.12; margin:18px 0 14px; letter-spacing:-.02em}
+  h2{font-size:clamp(22px,3vw,32px); margin:0 0 10px; letter-spacing:-.01em}
+  h3{font-size:18px; margin:0 0 6px}
+  .lead{color:var(--muted-fg); font-size:clamp(16px,2vw,19px); max-width:62ch}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:600;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--accent);
+  }
+
+  .hero{display:grid; grid-template-columns:1.05fr .95fr; gap:44px; align-items:center; padding-top:64px}
+  .cta-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:26px}
+  .note{
+    margin-top:18px; padding:12px 14px; border:1px solid var(--border); border-left:3px solid var(--accent);
+    background:var(--card); border-radius:0 10px 10px 0; color:var(--muted-fg); font-size:14.5px;
+  }
+  .shot{
+    border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;
+    background:var(--card); box-shadow:0 24px 60px rgba(0,0,0,.45);
+  }
+  .shot img{width:100%}
+  .shot figcaption{padding:10px 14px; font-size:13px; color:var(--muted-fg); border-top:1px solid var(--border)}
+
+  .grid{display:grid; gap:18px}
+  .cols-3{grid-template-columns:repeat(3,1fr)}
+  .cols-2{grid-template-columns:repeat(2,1fr)}
+  .card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px}
+  .card p{margin:0; color:var(--muted-fg); font-size:15px}
+  .card svg{color:var(--accent); margin-bottom:10px}
+  .kicker{color:var(--muted-fg); font-size:14px; margin:6px 0 0}
+
+  ol.steps{counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:16px}
+  ol.steps>li{
+    counter-increment:s; position:relative; padding:18px 18px 18px 62px;
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  }
+  ol.steps>li::before{
+    content:counter(s); position:absolute; left:18px; top:16px;
+    width:30px; height:30px; border-radius:50%; display:grid; place-items:center;
+    background:var(--accent); color:var(--on-accent); font-weight:700; font-size:15px;
+  }
+  ol.steps h3{margin-top:2px}
+  pre{
+    margin:12px 0 0; padding:14px 16px; background:#0B1220; border:1px solid var(--border);
+    border-radius:10px; overflow-x:auto; font-size:13.5px; color:#E2E8F0;
+  }
+  .copy{float:right; margin-top:-2px}
+  .copy button{
+    cursor:pointer; background:var(--primary); color:var(--muted-fg); border:1px solid var(--border);
+    border-radius:8px; padding:4px 10px; font:inherit; font-size:12px; transition:color .2s,background .2s;
+  }
+  .copy button:hover{color:var(--fg); background:var(--secondary)}
+
+  details{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:0; margin-bottom:12px}
+  details summary{
+    cursor:pointer; padding:16px 18px; font-weight:600; font-size:15.5px; list-style:none;
+    display:flex; justify-content:space-between; gap:14px; align-items:center;
+  }
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{content:"+"; color:var(--accent); font-size:20px; font-weight:400}
+  details[open] summary::after{content:"–"}
+  details .body{padding:0 18px 18px; color:var(--muted-fg); font-size:15px}
+  details .body code{background:#0B1220; padding:2px 6px; border-radius:5px; font-size:13px; color:#E2E8F0}
+
+  .gallery{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+  figure{margin:0}
+
+  footer.site{padding:44px 0; color:var(--muted-fg); font-size:14px}
+  footer.site .cols{display:flex; flex-wrap:wrap; gap:28px; justify-content:space-between}
+  footer.site a{color:var(--muted-fg)}
+  footer.site a:hover{color:var(--fg)}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+  .badges img{height:20px}
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr; padding-top:40px}
+    .cols-3,.gallery{grid-template-columns:1fr}
+    .cols-2{grid-template-columns:1fr}
+    nav.site{display:none}
+    section{padding:56px 0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important; transition:none!important; scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Lewati ke konten</a>
+
+<header class="site">
+  <div class="wrap bar">
+    <span class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M3 10h18"/><circle cx="17" cy="15" r="1.1"/>
+      </svg>
+      Wijaya
+    </span>
+    <nav class="site" aria-label="Navigasi utama">
+      <a href="#fitur">Fitur</a>
+      <a href="#tangkapan">Tangkapan layar</a>
+      <a href="#instalasi">Instalasi</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn" href="https://github.com/thickkoezz/wijaya">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap hero">
+    <div>
+      <span class="eyebrow">Free &amp; open source · MIT</span>
+      <h1>Tulis ke HDD NTFS dari Mac — tanpa software berbayar.</h1>
+      <p class="lead">Wijaya membuat disk NTFS bisa dibaca-tulis di Finder. Dibungkus dari driver
+        <code>ntfs-3g</code> + FUSE-T, dirancang khusus untuk Apple Silicon dan macOS Tahoe, di mana
+        tool gratis lain gagal karena proteksi macOS.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="https://github.com/thickkoezz/wijaya/releases">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
+          Unduh (.dmg)
+        </a>
+        <a class="btn" href="https://github.com/thickkoezz/wijaya">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4 1.5-4-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 4.5-1.5 4.5-5 0-1.1-.4-2.1-1-2.9.1-.3.5-1.4-.1-2.9 0 0-1.1-.3-3.5 1.3a12 12 0 0 0-6 0C6.1 3.9 5 4.2 5 4.2c-.6 1.5-.2 2.6-.1 2.9A4.2 4.2 0 0 0 4 10c0 3.5 1.7 4.7 4.5 5-.4.5-.5 1-.5 1.9V21"/></svg>
+          Lihat sumber
+        </a>
+      </div>
+      <p class="note"><strong>Tanpa Developer ID berbayar.</strong> Paket tidak ditandatangani Apple,
+        jadi saat pertama membuka kamu cukup <strong>klik-kanan → Open</strong> (atau pakai Homebrew).
+        Terima kasih sudah maklum… 🙏</p>
+      <div class="badges">
+        <img src="https://img.shields.io/badge/License-MIT-22c55e.svg" alt="Lisensi MIT">
+        <img src="https://img.shields.io/badge/price-free-22c55e.svg" alt="Gratis">
+        <img src="https://img.shields.io/badge/macOS-14%2B%20%C2%B7%20Apple%20Silicon-1e293b.svg" alt="macOS 14+ Apple Silicon">
+      </div>
+    </div>
+    <figure class="shot">
+      <img src="public/a.png" alt="Jendela aplikasi Wijaya menampilkan HDD NTFS My Passport dengan status dan tombol Mount Read-Write">
+      <figcaption>Wijaya.app — deteksi volume, satu klik mount, log transparan.</figcaption>
+    </figure>
+  </div>
+
+  <section id="fitur">
+    <div class="wrap">
+      <span class="eyebrow">Kenapa Wijaya</span>
+      <h2>Bekerja di tempat tool gratis lain menyerah</h2>
+      <p class="lead">macOS memblokir akses <code>/dev/disk</code> lewat TCC, dan macFUSE kerap tak bisa
+        di-aktifkan. Wijaya menangani keduanya.</p>
+      <div class="grid cols-3" style="margin-top:28px">
+        <div class="card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.4 8.2-8 9-4.6-.8-8-4-8-9V7z"/></svg>
+          <h3>Kext-less (FUSE-T)</h3>
+          <p>Tidak butuh kernel extension, tidak perlu menurunkan keamanan sistem, dan tidak perlu reboot ke Recovery Mode.</p>
+        </div>
+        <div class="card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7V5h16v2"/><path d="M9 5v14"/><path d="M15 5v14"/></svg>
+          <h3>Baca &amp; tulis asli</h3>
+          <p>Mount Read-Write lewat <code>ntfs-3g</code>, plus opsi Read-Only, Unmount, Eject, dan Repair (ntfsfix).</p>
+        </div>
+        <div class="card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8"/><path d="M20 4v4h-4"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 16"/><path d="M4 20v-4h4"/></svg>
+          <h3>Auto-mount</h3>
+          <p>Opsional: begitu HDD NTFS dicolok, langsung read-write tanpa klik dan tanpa prompt — lewat LaunchAgent.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tangkapan">
+    <div class="wrap">
+      <span class="eyebrow">Tangkapan layar</span>
+      <h2>Terlihat seperti aplikasi Mac pada umumnya</h2>
+      <div class="gallery" style="margin-top:24px">
+        <figure class="shot"><img src="public/a.png" alt="Jendela Wijaya menampilkan HDD NTFS My Passport dengan status dan tombol mount"><figcaption>Jendela utama</figcaption></figure>
+        <figure class="shot"><img src="public/b.png" alt="Panel FUSE-T menunjukkan koneksi aktif sebagai NFS dengan tombol Disconnect"><figcaption>FUSE-T aktif</figcaption></figure>
+        <figure class="shot"><img src="public/c.png" alt="Volume fuse-t muncul di bagian Locations pada sidebar Finder"><figcaption>Muncul di Finder</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="instalasi">
+    <div class="wrap">
+      <span class="eyebrow">Instalasi</span>
+      <h2>Panduan lengkap (5 langkah)</h2>
+      <p class="lead">Total sekitar 5 menit. Butuh <strong>Homebrew</strong> dan macOS 14+ di Apple Silicon.</p>
+
+      <ol class="steps" style="margin-top:26px">
+        <li>
+          <h3>Pasang FUSE-T (prasyarat)</h3>
+          <div class="copy"><button data-copy="brew install --cask macos-fuse-t/homebrew-cask/fuse-t">Salin</button></div>
+          <pre>brew install --cask macos-fuse-t/homebrew-cask/fuse-t</pre>
+        </li>
+        <li>
+          <h3>Unduh &amp; pasang Wijaya</h3>
+          <p class="kicker">Ambil <code>.dmg</code> dari halaman Releases, buka, lalu dobel-klik installer.
+            Karena belum ditandatangani Apple, buka dengan <strong>klik-kanan → Open</strong>.</p>
+          <div class="copy"><button data-copy="sudo installer -pkg Wijaya-1.0.pkg -target / -allowUntrusted">Salin</button></div>
+          <pre># alternatif lewat Terminal (jika membuka lewat klik sulit):
+sudo installer -pkg Wijaya-1.0.pkg -target / -allowUntrusted</pre>
+        </li>
+        <li>
+          <h3>Beri izin Full Disk Access</h3>
+          <p class="kicker">System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> →
+            klik <code>+</code> → tekan <code>⌘⇧G</code> lalu ketik path. Tambahkan <strong>ketiganya</strong>:</p>
+          <pre>/usr/local/bin/ntfs-3g
+/bin/bash
+Wijaya.app</pre>
+          <p class="kicker">Ini <strong>wajib</strong>: macOS memblokir akses <code>/dev/disk</code> lewat TCC,
+            bahkan untuk root. Tanpa izin ini mount gagal dengan “Operation not permitted”.</p>
+        </li>
+        <li>
+          <h3>Buka Wijaya &amp; mount</h3>
+          <p class="kicker">Colok HDD NTFS-mu → klik <strong>Mount Read-Write</strong> → masukkan password admin.</p>
+        </li>
+        <li>
+          <h3>Selalu Eject sebelum mencabut</h3>
+          <p class="kicker">FUSE-T punya write cache. Klik <strong>Eject</strong> dulu, baru cabut — supaya
+            NTFS tidak korup.</p>
+        </li>
+      </ol>
+
+      <p class="kicker" style="margin-top:22px">Suka build dari sumber? Semua langkahnya ada di
+        <a href="https://github.com/thickkoezz/wijaya#instalasi-langkah-demi-langkah">README</a>.</p>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <span class="eyebrow">FAQ</span>
+      <h2>Pertanyaan yang sering muncul</h2>
+      <div style="margin-top:22px">
+        <details open>
+          <summary>Kenapa ada peringatan “unidentified developer”?</summary>
+          <div class="body">Karena paket <strong>tidak ditandatangani Apple</strong>. Tanda tangan resmi butuh
+            <strong>Apple Developer Program $99/tahun</strong>, dan aku memilih tidak berlangganan agar
+            aplikasi ini tetap gratis. Solusinya mudah: buka dengan <em>klik-kanan → Open</em> satu kali,
+            atau pasang lewat Homebrew (bebas peringatan).</div>
+        </details>
+        <details>
+          <summary>Kenapa butuh Full Disk Access?</summary>
+          <div class="body">Sejak macOS Sequoia, TCC memblokir akses ke <code>/dev/disk</code>
+            <strong>bahkan untuk proses root</strong>. Beri izin Full Disk Access ke
+            <code>/usr/local/bin/ntfs-3g</code>, <code>/bin/bash</code>, dan <code>Wijaya.app</code> agar
+            driver bisa membuka device.</div>
+        </details>
+        <details>
+          <summary>Muncul pesan “NTFS hibernated / unsafe state”.</summary>
+          <div class="body">Drive belum di-shutdown bersih dari Windows (Fast Startup). Cara terbaik:
+            boot Windows → matikan <em>Fast Startup</em> → lakukan <strong>Shutdown penuh</strong>.
+            Alternatif cepat di aplikasi: tombol <strong>Hapus hiberfil &amp; mount</strong>.</div>
+        </details>
+        <details>
+          <summary>Popup “…does not support permanent version storage”.</summary>
+          <div class="body">Normal dan tidak berbahaya — file tetap tersimpan. FUSE-T memount volume
+            sebagai network (NFS), dan macOS mematikan fitur Versions di volume non-native.</div>
+        </details>
+        <details>
+          <summary>Aman untuk data penting?</summary>
+          <div class="body">Selalu klik <strong>Eject</strong> sebelum mencabut. Dan seperti semua driver
+            NTFS pihak ketiga: <strong>tetap jaga backup</strong>.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap cols">
+    <div>
+      <strong style="color:var(--fg)">Wijaya</strong> — GUI baca-tulis NTFS untuk macOS.
+      <div style="margin-top:6px">Lisensi <a href="https://github.com/thickkoezz/wijaya/blob/main/LICENSE">MIT</a> · Gratis selamanya.</div>
+    </div>
+    <div style="display:flex; gap:22px; flex-wrap:wrap">
+      <a href="https://github.com/thickkoezz/wijaya">Repositori</a>
+      <a href="https://github.com/thickkoezz/wijaya#instalasi-langkah-demi-langkah">Panduan</a>
+      <a href="https://github.com/thickkoezz/wijaya/releases">Rilis</a>
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:18px; font-size:13px; color:#64748B">
+    Dibangun dengan ntfs-3g (GPL-2.0/LGPL-2.0) dan FUSE-T. Bukan produk Apple. Apple, macOS,
+    dan Finder adalah merek dagang Apple Inc.
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.getAttribute('data-copy');
+      navigator.clipboard.writeText(text).then(function () {
+        var old = btn.textContent; btn.textContent = 'Tersalin';
+        setTimeout(function () { btn.textContent = old; }, 1400);
+      });
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: -apple-system, "Helvetica Neue", sans-serif; font-size: 13px; color: #1d1d1f; }
+  code { background: #f0f0f2; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  h2 { font-size: 16px; }
+  ol, ul { margin-top: 4px; }
+</style>
+</head>
+<body>
+<h2>Hampir selesai</h2>
+<p><b>Langkah wajib — Full Disk Access</b> (sekali saja):</p>
+<ol>
+  <li>Buka <b>System Settings → Privacy &amp; Security → Full Disk Access</b>.</li>
+  <li>Klik <code>+</code>, tekan <code>⌘⇧G</code>, lalu tambahkan:
+    <ul>
+      <li><code>/usr/local/bin/ntfs-3g</code></li>
+      <li><code>/bin/bash</code></li>
+      <li><b>Wijaya.app</b></li>
+    </ul>
+  </li>
+  <li>Aktifkan toggle untuk ketiganya.</li>
+</ol>
+<p>Lalu buka <b>Wijaya</b>, dan klik <b>Mount Read-Write</b> pada HDD NTFS-mu.</p>
+<p>⚠️ Selalu klik <b>Eject</b> sebelum mencabut HDD (FUSE-T punya write cache).</p>
+</body>
+</html>

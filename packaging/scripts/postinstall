@@ -1,0 +1,22 @@
+#!/bin/bash
+# postinstall — dijalankan installer sebagai root setelah payload disalin.
+set -u
+
+# Perbaiki permission driver yang baru dipasang.
+/usr/bin/chown root:wheel /usr/local/bin/ntfs-3g 2>/dev/null || true
+/bin/chmod 0755 /usr/local/bin/ntfs-3g 2>/dev/null || true
+for f in /usr/local/lib/libntfs-3g*.dylib; do
+  [ -e "$f" ] || continue
+  /usr/bin/chown root:wheel "$f" 2>/dev/null || true
+  /bin/chmod 0644 "$f" 2>/dev/null || true
+done
+
+# Buka panel Full Disk Access untuk memudahkan pemberian izin.
+CONSOLE_USER=$(/usr/bin/stat -f '%Su' /dev/console 2>/dev/null || true)
+if [ -n "$CONSOLE_USER" ] && [ "$CONSOLE_USER" != "root" ] && [ "$CONSOLE_USER" != "loginwindow" ]; then
+  /usr/bin/su -l "$CONSOLE_USER" -c \
+    '/usr/bin/open "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension?Privacy_AllFiles"' \
+    >/dev/null 2>&1 || true
+fi
+
+exit 0

@@ -1,0 +1,6 @@
+build/
+Wijaya.xcodeproj/
+.DS_Store
+*.xcuserstate
+xcuserdata/
+.commandcode/
