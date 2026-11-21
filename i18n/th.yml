@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — อ่านและเขียนดิสก์ NTFS บน Mac (ฟรีและโอเพนซอร์ส)
+  description: Wijaya ทำให้ดิสก์ NTFS — HDD, SSD หรือ NVMe — อ่านและเขียนได้บน macOS ฟรี โอเพนซอร์ส (MIT) ใช้ ntfs-3g + FUSE-T
+nav:
+  features: ฟีเจอร์
+  format: ฟอร์แมต
+  screenshots: ภาพหน้าจอ
+  install: ติดตั้ง
+  faq: FAQ
+  github: GitHub
+hero:
+  eyebrow: ฟรี · โอเพนซอร์ส · MIT
+  title: อ่านและเขียนดิสก์ NTFS บน Mac — โดยไม่ต้องใช้ซอฟต์แวร์เสียเงิน
+  lead: Wijaya ทำให้ <strong>ดิสก์ NTFS</strong> — HDD, SSD, NVMe, แฟลชไดรฟ์ — เขียนได้จาก Finder บนพื้นฐาน <code>ntfs-3g</code> + FUSE-T
+  download: ดาวน์โหลด (.dmg)
+  source: ดูซอร์สโค้ด
+  note: <strong>ไม่ใช้ Developer ID แบบเสียเงิน</strong> แพ็กเกจไม่ได้ลงนามโดย Apple ดังนั้นครั้งแรกที่เปิดให้<strong>คลิกขวา → เปิด</strong> (หรือติดตั้งผ่าน Homebrew ซึ่งไม่มีคำเตือน) ขอบคุณที่เข้าใจ
+  shot_caption: Wijaya.app — ตรวจจับวอลุ่ม เมานต์ในคลิกเดียว บันทึกโปร่งใส
+features:
+  eyebrow: ทำไมต้อง Wijaya
+  title: ทำงานได้ในจุดที่เครื่องมือฟรีอื่นยอมแพ้
+  c1_title: ไม่ต้องใช้ kext (FUSE-T)
+  c1_desc: ไม่ต้องใช้ kernel extension ไม่ต้องลดความปลอดภัยของระบบ และไม่ต้องรีสตาร์ตเข้า Recovery Mode
+  c2_title: อ่านและเขียนได้จริง
+  c2_desc: เมานต์ Read-Write ผ่าน <code>ntfs-3g</code> พร้อม Read-Only, Unmount, Eject และ Repair
+  c3_title: เมานต์อัตโนมัติ
+  c3_desc: ตัวเลือกเสริม — เสียบดิสก์ NTFS แล้วเมานต์แบบ read-write ทันที ไม่ต้องคลิก ไม่ต้องใส่รหัส
+format:
+  eyebrow: ฟอร์แมตและสื่อ
+  title: ตัวกำหนดคือไฟล์ซิสเต็ม ไม่ใช่ชนิดของดิสก์
+  lead: HDD, SSD, NVMe, แฟลชไดรฟ์, การ์ด SD — เหมือนกันหมด Wijaya เน้น NTFS
+  n_title: NTFS → ต้องใช้ Wijaya
+  n_desc: macOS <em>อ่าน</em> NTFS ได้เท่านั้น Wijaya ให้การอ่าน-เขียนเต็มรูปแบบผ่าน <code>ntfs-3g</code> รวมถึง SSD ที่ฟอร์แมตเป็น NTFS
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: อ่าน-เขียนได้อยู่แล้วบน macOS แต่ Wijaya ยังแสดงพร้อมสถานะให้
+  footnote: ext4 / Btrfs (Linux) ยังไม่รองรับ
+shots:
+  eyebrow: ภาพหน้าจอ
+  title: ดูเหมือนแอป Mac ทั่วไป
+  alt1: หน้าต่าง Wijaya แสดงดิสก์ NTFS สถานะ และปุ่มเมานต์
+  cap1: หน้าต่างหลัก
+  alt2: แผง FUSE-T แสดงการเชื่อมต่อผ่าน NFS
+  cap2: FUSE-T ทำงาน
+  alt3: วอลุ่ม fuse-t ปรากฏใน Locations ของ Finder
+  cap3: แสดงใน Finder
+install:
+  eyebrow: การติดตั้ง
+  title: คู่มือฉบับเต็ม (5 ขั้นตอน)
+  lead: ใช้เวลาราว 5 นาที ต้องมี Homebrew และ macOS 14+ บน Apple Silicon
+  s1_title: ติดตั้ง FUSE-T (สิ่งที่ต้องมีก่อน)
+  s1_desc: FUSE-T ให้เลเยอร์ FUSE โดยไม่ต้องใช้ kernel extension
+  s2_title: ดาวน์โหลดและติดตั้ง Wijaya
+  s2_desc: ดึง <code>.dmg</code> จาก Releases เปิดขึ้นมาแล้วรันตัวติดตั้ง เนื่องจากไม่ได้ลงนามโดย Apple ให้เปิดด้วย<strong>คลิกขวา → เปิด</strong>
+  s3_title: อนุญาต Full Disk Access
+  s3_desc: System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> → <code>+</code> → <code>⌘⇧G</code> จำเป็น เพราะ macOS บล็อก <code>/dev/disk</code> แม้แต่ root
+  s4_title: เปิด Wijaya แล้วเมานต์
+  s4_desc: เสียบดิสก์ NTFS → คลิก <strong>Mount Read-Write</strong> → ใส่รหัสผ่านผู้ดูแลระบบ
+  s5_title: Eject ก่อนถอดทุกครั้ง
+  s5_desc: FUSE-T มีแคชการเขียน ให้กด <strong>Eject</strong> ก่อนแล้วค่อยถอด
+  readme: อยากบิลด์จากซอร์ส? ขั้นตอนทั้งหมดอยู่ใน README
+faq:
+  eyebrow: FAQ
+  title: คำถามที่พบบ่อย
+  q1: ทำไมมีคำเตือน “unidentified developer”?
+  a1: เพราะแพ็กเกจไม่ได้ลงนามโดย Apple การลงนามอย่างเป็นทางการต้องใช้ Apple Developer Program ปีละ 99 ดอลลาร์ โครงการนี้จึงเลือกที่จะฟรี
+  q2: ทำไมต้องใช้ Full Disk Access?
+  a2: ตั้งแต่ macOS Sequoia TCC บล็อกการเข้าถึง <code>/dev/disk</code> แม้แต่โปรเซส root
+  q3: ขึ้นข้อความ “NTFS hibernated / unsafe state”
+  a3: ดิสก์ไม่ได้ปิดเครื่องอย่างถูกต้องจาก Windows (Fast Startup) ให้บูตเข้า Windows ปิด Fast Startup แล้วปิดเครื่องแบบเต็มรูปแบบ
+  q4: ปลอดภัยกับข้อมูลสำคัญไหม?
+  a4: กด <strong>Eject</strong> ก่อนถอดทุกครั้ง และหมั่นสำรองข้อมูล
+footer:
+  tagline: GUI อ่านและเขียน NTFS สำหรับ macOS
+  license: สัญญาอนุญาต MIT · ฟรีตลอดไป
+  repos: ที่เก็บโค้ด
+  guide: คู่มือ
+  releases: รีลีส
+  legal: สร้างด้วย ntfs-3g (GPL-2.0/LGPL-2.0) และ FUSE-T ไม่ใช่ผลิตภัณฑ์ของ Apple
+ui:
+  skip: ไปที่เนื้อหา
+  language: ภาษา
+  copy: คัดลอก
+  copied: คัดลอกแล้ว
+  theme: ธีม
+  to_light: เปลี่ยนเป็นโหมดสว่าง
+  to_dark: เปลี่ยนเป็นโหมดมืด

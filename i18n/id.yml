@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — Baca-tulis disk NTFS di Mac (gratis & open source)
+  description: Wijaya membuat disk NTFS — HDD, SSD, atau NVMe — bisa dibaca-tulis di macOS. Gratis, open source (MIT), berbasis ntfs-3g + FUSE-T.
+nav:
+  features: Fitur
+  format: Format
+  screenshots: Tangkapan layar
+  install: Instalasi
+  faq: FAQ
+  github: GitHub
+hero:
+  eyebrow: Gratis &amp; open source · MIT
+  title: Baca-tulis disk NTFS di Mac — tanpa software berbayar.
+  lead: Wijaya membuat <strong>disk NTFS</strong> — HDD, SSD, NVMe, flashdisk — bisa dibaca-tulis di Finder, di atas driver <code>ntfs-3g</code> + FUSE-T.
+  download: Unduh (.dmg)
+  source: Lihat sumber
+  note: <strong>Tanpa Developer ID berbayar.</strong> Paket tidak ditandatangani Apple, jadi saat pertama membuka cukup <strong>klik-kanan → Open</strong> (atau lewat Homebrew, yang bebas peringatan). Mohon pengertiannya.
+  shot_caption: Wijaya.app — deteksi volume, satu klik mount, log transparan.
+features:
+  eyebrow: Kenapa Wijaya
+  title: Bekerja di tempat tool gratis lain menyerah
+  c1_title: Kext-less (FUSE-T)
+  c1_desc: Tidak butuh kernel extension, tanpa menurunkan keamanan sistem dan tanpa reboot ke Recovery Mode.
+  c2_title: Baca &amp; tulis asli
+  c2_desc: Mount Read-Write lewat <code>ntfs-3g</code>, plus Read-Only, Unmount, Eject, dan Repair.
+  c3_title: Auto-mount
+  c3_desc: Opsional — begitu disk NTFS dicolok, langsung read-write tanpa klik dan tanpa prompt.
+format:
+  eyebrow: Format &amp; media
+  title: Yang menentukan itu filesystem, bukan jenis disk
+  lead: HDD, SSD, NVMe, flashdisk, SD card — semuanya sama saja. Wijaya fokus pada NTFS.
+  n_title: NTFS → butuh Wijaya
+  n_desc: macOS hanya bisa <em>membaca</em> NTFS. Wijaya memberi baca-tulis penuh lewat <code>ntfs-3g</code>, termasuk SSD berformat NTFS.
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: Sudah read-write bawaan macOS. Wijaya tetap menampilkannya beserta statusnya.
+  footnote: ext4 / Btrfs (Linux) belum didukung.
+shots:
+  eyebrow: Tangkapan layar
+  title: Terlihat seperti aplikasi Mac pada umumnya
+  alt1: Jendela aplikasi Wijaya menampilkan disk NTFS dengan status dan tombol mount
+  cap1: Jendela utama
+  alt2: Panel FUSE-T menunjukkan koneksi aktif sebagai NFS
+  cap2: FUSE-T aktif
+  alt3: Volume fuse-t muncul di bagian Locations pada Finder
+  cap3: Muncul di Finder
+install:
+  eyebrow: Instalasi
+  title: Panduan lengkap (5 langkah)
+  lead: Sekitar 5 menit. Butuh Homebrew dan macOS 14+ di Apple Silicon.
+  s1_title: Pasang FUSE-T (prasyarat)
+  s1_desc: FUSE-T menyediakan lapisan FUSE tanpa kernel extension.
+  s2_title: Unduh &amp; pasang Wijaya
+  s2_desc: Ambil <code>.dmg</code> dari halaman Releases, buka, lalu jalankan installer. Karena belum ditandatangani Apple, buka dengan <strong>klik-kanan → Open</strong>.
+  s3_title: Beri izin Full Disk Access
+  s3_desc: System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> → <code>+</code> → <code>⌘⇧G</code>. Wajib, karena macOS memblokir <code>/dev/disk</code> bahkan untuk root.
+  s4_title: Buka Wijaya &amp; mount
+  s4_desc: Colok disk NTFS-mu → klik <strong>Mount Read-Write</strong> → masukkan password admin.
+  s5_title: Selalu Eject sebelum mencabut
+  s5_desc: FUSE-T punya write cache. Klik <strong>Eject</strong> dulu, baru cabut.
+  readme: Suka build dari sumber? Langkah lengkapnya ada di README.
+faq:
+  eyebrow: FAQ
+  title: Pertanyaan yang sering muncul
+  q1: Kenapa ada peringatan “unidentified developer”?
+  a1: Karena paket tidak ditandatangani Apple. Tanda tangan resmi butuh Apple Developer Program $99/tahun, dan proyek ini memilih tetap gratis.
+  q2: Kenapa butuh Full Disk Access?
+  a2: Sejak macOS Sequoia, TCC memblokir akses <code>/dev/disk</code> bahkan untuk proses root.
+  q3: Muncul pesan “NTFS hibernated / unsafe state”.
+  a3: Drive belum di-shutdown bersih dari Windows (Fast Startup). Boot Windows, matikan Fast Startup, lalu lakukan Shutdown penuh.
+  q4: Aman untuk data penting?
+  a4: Selalu klik <strong>Eject</strong> sebelum mencabut. Dan tetap jaga backup.
+footer:
+  tagline: GUI baca-tulis NTFS untuk macOS.
+  license: Lisensi MIT · Gratis selamanya.
+  repos: Repositori
+  guide: Panduan
+  releases: Rilis
+  legal: Dibangun dengan ntfs-3g (GPL-2.0/LGPL-2.0) dan FUSE-T. Bukan produk Apple.
+ui:
+  skip: Lewati ke konten
+  language: Bahasa
+  copy: Salin
+  copied: Tersalin
+  theme: Tema
+  to_light: Ganti ke mode terang
+  to_dark: Ganti ke mode gelap

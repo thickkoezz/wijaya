@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — чтение и запись дисков NTFS на Mac (бесплатно, с открытым кодом)
+  description: Wijaya позволяет читать и записывать диски NTFS — HDD, SSD или NVMe — в macOS. Бесплатно, с открытым кодом (MIT), на основе ntfs-3g + FUSE-T.
+nav:
+  features: Возможности
+  format: Форматы
+  screenshots: Скриншоты
+  install: Установка
+  faq: FAQ
+  github: GitHub
+hero:
+  eyebrow: Бесплатно и с открытым кодом · MIT
+  title: Читайте и записывайте диски NTFS на Mac — без платных программ.
+  lead: Wijaya делает <strong>диски NTFS</strong> — HDD, SSD, NVMe, флешки — доступными для записи в Finder, на основе <code>ntfs-3g</code> + FUSE-T.
+  download: Скачать (.dmg)
+  source: Исходный код
+  note: <strong>Без платного Developer ID.</strong> Пакет не подписан Apple, поэтому при первом запуске просто <strong>ПКМ → Открыть</strong> (или установите через Homebrew — там предупреждения нет). Спасибо за понимание.
+  shot_caption: Wijaya.app — обнаружение томов, монтирование в один клик, прозрачный журнал.
+features:
+  eyebrow: Почему Wijaya
+  title: Работает там, где сдаются другие бесплатные инструменты
+  c1_title: Без kext (FUSE-T)
+  c1_desc: Без расширения ядра, без снижения безопасности системы и без перезагрузки в режим восстановления.
+  c2_title: Настоящее чтение и запись
+  c2_desc: Монтирование Read-Write через <code>ntfs-3g</code>, а также Read-Only, Unmount, Eject и Repair.
+  c3_title: Автомонтирование
+  c3_desc: Опционально — при подключении диска NTFS он монтируется read-write без кликов и пароля.
+format:
+  eyebrow: Форматы и носители
+  title: Важна файловая система, а не тип диска
+  lead: HDD, SSD, NVMe, флешка, SD-карта — всё равно. Wijaya работает с NTFS.
+  n_title: NTFS → нужен Wijaya
+  n_desc: macOS умеет только <em>читать</em> NTFS. Wijaya даёт полную запись и чтение через <code>ntfs-3g</code>, включая SSD в NTFS.
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: Уже доступны для записи в macOS. Wijaya всё равно показывает их со статусом.
+  footnote: ext4 / Btrfs (Linux) пока не поддерживаются.
+shots:
+  eyebrow: Скриншоты
+  title: Выглядит как обычное приложение для Mac
+  alt1: Окно Wijaya с диском NTFS, его статусом и кнопкой монтирования
+  cap1: Главное окно
+  alt2: Панель FUSE-T с активным подключением по NFS
+  cap2: FUSE-T активен
+  alt3: Том fuse-t в разделе Locations Finder
+  cap3: Виден в Finder
+install:
+  eyebrow: Установка
+  title: Полное руководство (5 шагов)
+  lead: Около 5 минут. Нужны Homebrew и macOS 14+ на Apple Silicon.
+  s1_title: Установите FUSE-T (обязательно)
+  s1_desc: FUSE-T даёт слой FUSE без расширения ядра.
+  s2_title: Скачайте и установите Wijaya
+  s2_desc: Возьмите <code>.dmg</code> в Releases, откройте и запустите установщик. Он не подписан Apple, поэтому открывайте через <strong>ПКМ → Открыть</strong>.
+  s3_title: Выдайте Full Disk Access
+  s3_desc: System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> → <code>+</code> → <code>⌘⇧G</code>. Обязательно: macOS блокирует <code>/dev/disk</code> даже для root.
+  s4_title: Откройте Wijaya и смонтируйте
+  s4_desc: Подключите диск NTFS → нажмите <strong>Mount Read-Write</strong> → введите пароль администратора.
+  s5_title: Всегда извлекайте перед отключением
+  s5_desc: У FUSE-T есть кэш записи. Сначала нажмите <strong>Eject</strong>, потом отключайте.
+  readme: Хотите собрать из исходников? Все шаги есть в README.
+faq:
+  eyebrow: FAQ
+  title: Частые вопросы
+  q1: Почему предупреждение “unidentified developer”?
+  a1: Пакет не подписан Apple. Официальная подпись требует Apple Developer Program за 99 долларов в год, а проект решил остаться бесплатным.
+  q2: Зачем нужен Full Disk Access?
+  a2: С macOS Sequoia TCC блокирует доступ к <code>/dev/disk</code> даже для процессов root.
+  q3: Появилось “NTFS hibernated / unsafe state”.
+  a3: Диск не был корректно выключен из Windows (Fast Startup). Загрузитесь в Windows, отключите Fast Startup и выполните полное завершение работы.
+  q4: Это безопасно для важных данных?
+  a4: Всегда нажимайте <strong>Eject</strong> перед отключением. И делайте резервные копии.
+footer:
+  tagline: GUI для чтения и записи NTFS в macOS.
+  license: Лицензия MIT · Бесплатно навсегда.
+  repos: Репозиторий
+  guide: Руководство
+  releases: Релизы
+  legal: Собрано на ntfs-3g (GPL-2.0/LGPL-2.0) и FUSE-T. Не продукт Apple.
+ui:
+  skip: Перейти к содержимому
+  language: Язык
+  copy: Копировать
+  copied: Скопировано
+  theme: Тема
+  to_light: Светлая тема
+  to_dark: Тёмная тема

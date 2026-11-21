@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — NTFS-schijven lezen en schrijven op de Mac (gratis en open source)
+  description: Wijaya maakt NTFS-schijven — HDD, SSD of NVMe — beschrijfbaar op macOS. Gratis, open source (MIT), gebouwd op ntfs-3g + FUSE-T.
+nav:
+  features: Functies
+  format: Formaten
+  screenshots: Schermafbeeldingen
+  install: Installatie
+  faq: FAQ
+  github: GitHub
+hero:
+  eyebrow: Gratis en open source · MIT
+  title: NTFS-schijven lezen én schrijven op je Mac — zonder betaalde software.
+  lead: Wijaya maakt <strong>NTFS-schijven</strong> — HDD, SSD, NVMe, usb-sticks — beschrijfbaar in Finder, op basis van <code>ntfs-3g</code> + FUSE-T.
+  download: Downloaden (.dmg)
+  source: Broncode bekijken
+  note: <strong>Geen betaalde Developer ID.</strong> Het pakket is niet door Apple ondertekend; open het de eerste keer met <strong>rechtermuisknop → Open</strong> (of installeer via Homebrew, dat de waarschuwing overslaat). Bedankt voor het begrip.
+  shot_caption: Wijaya.app — schijfdetectie, mounten met één klik, transparant logboek.
+features:
+  eyebrow: Waarom Wijaya
+  title: Werkt waar andere gratis tools opgeven
+  c1_title: Zonder kext (FUSE-T)
+  c1_desc: Geen kernel-extensie, geen verlaagde systeembeveiliging en geen herstart naar Herstelmodus.
+  c2_title: Echt lezen en schrijven
+  c2_desc: Read-Write mounten via <code>ntfs-3g</code>, plus Read-Only, Unmount, Eject en Repair.
+  c3_title: Automatisch mounten
+  c3_desc: Optioneel — zodra een NTFS-schijf wordt aangesloten, wordt hij read-write gemount zonder klik en zonder wachtwoord.
+format:
+  eyebrow: Formaten en media
+  title: Het bestandssysteem bepaalt het, niet het soort schijf
+  lead: HDD, SSD, NVMe, usb-stick, SD-kaart — allemaal hetzelfde. Wijaya richt zich op NTFS.
+  n_title: NTFS → heeft Wijaya nodig
+  n_desc: macOS kan NTFS alleen <em>lezen</em>. Wijaya geeft volledig lezen en schrijven via <code>ntfs-3g</code>, ook op NTFS-geformatteerde SSD's.
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: Al lees- en beschrijfbaar op macOS. Wijaya toont ze toch met hun status.
+  footnote: ext4 / Btrfs (Linux) worden nog niet ondersteund.
+shots:
+  eyebrow: Schermafbeeldingen
+  title: Ziet eruit als een gewone Mac-app
+  alt1: Wijaya-venster met een NTFS-schijf, de status en de mount-knop
+  cap1: Hoofdvenster
+  alt2: FUSE-T-paneel met een actieve verbinding via NFS
+  cap2: FUSE-T actief
+  alt3: Het fuse-t-volume in Locations van de Finder
+  cap3: Verschijnt in Finder
+install:
+  eyebrow: Installatie
+  title: Volledige handleiding (5 stappen)
+  lead: Ongeveer 5 minuten. Vereist Homebrew en macOS 14+ op Apple Silicon.
+  s1_title: Installeer FUSE-T (voorwaarde)
+  s1_desc: FUSE-T levert de FUSE-laag zonder kernel-extensie.
+  s2_title: Download en installeer Wijaya
+  s2_desc: Pak de <code>.dmg</code> uit Releases, open hem en start de installer. Niet door Apple ondertekend, dus open met <strong>rechtermuisknop → Open</strong>.
+  s3_title: Geef Full Disk Access
+  s3_desc: System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> → <code>+</code> → <code>⌘⇧G</code>. Verplicht, want macOS blokkeert <code>/dev/disk</code> zelfs voor root.
+  s4_title: Open Wijaya en mount
+  s4_desc: Sluit je NTFS-schijf aan → klik <strong>Mount Read-Write</strong> → voer je beheerderswachtwoord in.
+  s5_title: Werp altijd uit voordat je loskoppelt
+  s5_desc: FUSE-T heeft een schrijfcache. Klik eerst <strong>Eject</strong>, koppel daarna los.
+  readme: Liever zelf bouwen uit de broncode? Alle stappen staan in de README.
+faq:
+  eyebrow: FAQ
+  title: Veelgestelde vragen
+  q1: Waarom de melding “unidentified developer”?
+  a1: Omdat het pakket niet door Apple is ondertekend. Officiële ondertekening vereist het Apple Developer Program van $99 per jaar, en dit project blijft bewust gratis.
+  q2: Waarom is Full Disk Access nodig?
+  a2: Sinds macOS Sequoia blokkeert TCC de toegang tot <code>/dev/disk</code>, zelfs voor root-processen.
+  q3: Ik kreeg “NTFS hibernated / unsafe state”.
+  a3: De schijf is niet netjes afgesloten vanuit Windows (Fast Startup). Start Windows, schakel Fast Startup uit en sluit volledig af.
+  q4: Is het veilig voor belangrijke data?
+  a4: Klik altijd <strong>Eject</strong> voordat je loskoppelt. En houd back-ups bij.
+footer:
+  tagline: NTFS lees- en schrijf-GUI voor macOS.
+  license: MIT-licentie · Voor altijd gratis.
+  repos: Repository
+  guide: Handleiding
+  releases: Releases
+  legal: Gebouwd met ntfs-3g (GPL-2.0/LGPL-2.0) en FUSE-T. Geen Apple-product.
+ui:
+  skip: Naar inhoud
+  language: Taal
+  copy: Kopiëren
+  copied: Gekopieerd
+  theme: Thema
+  to_light: Naar lichte modus
+  to_dark: Naar donkere modus

@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — قراءة وكتابة أقراص NTFS على Mac (مجاني ومفتوح المصدر)
+  description: يتيح Wijaya قراءة وكتابة أقراص NTFS — HDD أو SSD أو NVMe — على macOS. مجاني، مفتوح المصدر (MIT)، مبني على ntfs-3g + FUSE-T.
+nav:
+  features: الميزات
+  format: الصيغ
+  screenshots: لقطات الشاشة
+  install: التثبيت
+  faq: الأسئلة الشائعة
+  github: GitHub
+hero:
+  eyebrow: مجاني · مفتوح المصدر · MIT
+  title: اقرأ واكتب على أقراص NTFS في جهاز Mac — دون أي برنامج مدفوع.
+  lead: يجعل Wijaya <strong>أقراص NTFS</strong> — HDD و SSD و NVMe ووحدات الفلاش — قابلة للكتابة من Finder، بالاعتماد على <code>ntfs-3g</code> + FUSE-T.
+  download: تنزيل (.dmg)
+  source: عرض الشيفرة
+  note: <strong>بدون Developer ID مدفوع.</strong> الحزمة غير موقّعة من Apple، لذا عند أول فتح يكفي <strong>النقر بزر الفأرة الأيمن ← فتح</strong> (أو التثبيت عبر Homebrew الذي يتجاوز التحذير). شكرًا لتفهّمك.
+  shot_caption: Wijaya.app — كشف الوحدات، تركيب بنقرة واحدة، وسجل شفّاف.
+features:
+  eyebrow: لماذا Wijaya
+  title: يعمل حيث تتوقف الأدوات المجانية الأخرى
+  c1_title: بلا kext (FUSE-T)
+  c1_desc: لا حاجة إلى إضافة kernel ولا إلى تقليل أمان النظام ولا إلى إعادة التشغيل في وضع الاسترداد.
+  c2_title: قراءة وكتابة حقيقية
+  c2_desc: تركيب Read-Write عبر <code>ntfs-3g</code>، مع Read-Only و Unmount و Eject و Repair.
+  c3_title: تركيب تلقائي
+  c3_desc: اختياري — بمجرد توصيل قرص NTFS يتم تركيبه للقراءة والكتابة دون نقر ودون كلمة مرور.
+format:
+  eyebrow: الصيغ والوسائط
+  title: الحاسم هو نظام الملفات لا نوع القرص
+  lead: HDD و SSD و NVMe ووحدة فلاش وبطاقة SD — كلها سواء. يركز Wijaya على NTFS.
+  n_title: NTFS ← يحتاج Wijaya
+  n_desc: لا يستطيع macOS سوى <em>قراءة</em> NTFS. يوفّر Wijaya قراءة وكتابة كاملة عبر <code>ntfs-3g</code>، بما في ذلك أقراص SSD المهيّأة بصيغة NTFS.
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: قابلة للقراءة والكتابة أصلًا في macOS. ومع ذلك يعرضها Wijaya مع حالتها.
+  footnote: ext4 / Btrfs (لينكس) غير مدعومة بعد.
+shots:
+  eyebrow: لقطات الشاشة
+  title: يبدو كتطبيق Mac عادي
+  alt1: نافذة Wijaya تعرض قرص NTFS وحالته وزر التركيب
+  cap1: النافذة الرئيسية
+  alt2: لوحة FUSE-T تعرض اتصالًا نشطًا عبر NFS
+  cap2: FUSE-T نشط
+  alt3: وحدة fuse-t تظهر في Locations في Finder
+  cap3: يظهر في Finder
+install:
+  eyebrow: التثبيت
+  title: دليل كامل (5 خطوات)
+  lead: نحو 5 دقائق. يتطلب Homebrew و macOS 14+ على Apple Silicon.
+  s1_title: ثبّت FUSE-T (متطلب أساسي)
+  s1_desc: يوفّر FUSE-T طبقة FUSE دون إضافة kernel.
+  s2_title: نزّل Wijaya وثبّتها
+  s2_desc: احصل على <code>.dmg</code> من Releases وافتحه ثم شغّل المثبّت. ولأنه غير موقّع من Apple فافتحه بـ<strong>النقر بزر الفأرة الأيمن ← فتح</strong>.
+  s3_title: امنح Full Disk Access
+  s3_desc: System Settings ← Privacy &amp; Security ← <strong>Full Disk Access</strong> ← <code>+</code> ← <code>⌘⇧G</code>. إلزامي، لأن macOS يحجب <code>/dev/disk</code> حتى عن root.
+  s4_title: افتح Wijaya وركّب القرص
+  s4_desc: وصّل قرص NTFS ← اضغط <strong>Mount Read-Write</strong> ← أدخل كلمة مرور المدير.
+  s5_title: أخرج القرص دائمًا قبل فصله
+  s5_desc: لدى FUSE-T ذاكرة كتابة مؤقتة. اضغط <strong>Eject</strong> أولًا ثم افصل.
+  readme: تفضّل البناء من المصدر؟ كل الخطوات في ملف README.
+faq:
+  eyebrow: الأسئلة الشائعة
+  title: أسئلة متكررة
+  q1: لماذا يظهر تحذير “unidentified developer”؟
+  a1: لأن الحزمة غير موقّعة من Apple. التوقيع الرسمي يتطلب Apple Developer Program بنحو 99 دولارًا سنويًا، وقد اختار هذا المشروع أن يبقى مجانيًا.
+  q2: لماذا نحتاج Full Disk Access؟
+  a2: منذ macOS Sequoia يحجب TCC الوصول إلى <code>/dev/disk</code> حتى عن عمليات root.
+  q3: ظهرت رسالة “NTFS hibernated / unsafe state”.
+  a3: لم يُغلق القرص إغلاقًا نظيفًا من Windows (Fast Startup). أقلع في Windows وعطّل Fast Startup ثم أغلق الجهاز إغلاقًا كاملًا.
+  q4: هل هو آمن للبيانات المهمة؟
+  a4: اضغط <strong>Eject</strong> دائمًا قبل الفصل. واحتفظ بنسخ احتياطية.
+footer:
+  tagline: واجهة لقراءة وكتابة NTFS على macOS.
+  license: رخصة MIT · مجاني إلى الأبد.
+  repos: المستودع
+  guide: الدليل
+  releases: الإصدارات
+  legal: مبني على ntfs-3g (GPL-2.0/LGPL-2.0) و FUSE-T. ليس منتجًا من Apple.
+ui:
+  skip: تخطَّ إلى المحتوى
+  language: اللغة
+  copy: نسخ
+  copied: تم النسخ
+  theme: المظهر
+  to_light: التبديل إلى الوضع الفاتح
+  to_dark: التبديل إلى الوضع الداكن

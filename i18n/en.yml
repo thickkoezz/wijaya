@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — Read &amp; write NTFS disks on Mac (free &amp; open source)
+  description: Wijaya lets you read and write NTFS disks — HDD, SSD or NVMe — on macOS. Free, open source (MIT), built on ntfs-3g + FUSE-T.
+nav:
+  features: Features
+  format: Formats
+  screenshots: Screenshots
+  install: Install
+  faq: FAQ
+  github: GitHub
+hero:
+  eyebrow: Free &amp; open source · MIT
+  title: Read &amp; write NTFS disks on your Mac — with no paid software.
+  lead: Wijaya makes <strong>NTFS disks</strong> — HDD, SSD, NVMe, flash drives — writable in Finder, built on <code>ntfs-3g</code> + FUSE-T.
+  download: Download (.dmg)
+  source: View source
+  note: <strong>No paid Developer ID.</strong> The package isn't signed by Apple, so the first time you open it just <strong>right-click → Open</strong> (or install via Homebrew, which skips the warning). Thanks for understanding.
+  shot_caption: Wijaya.app — volume detection, one-click mount, transparent logs.
+features:
+  eyebrow: Why Wijaya
+  title: Works where other free tools give up
+  c1_title: Kext-less (FUSE-T)
+  c1_desc: No kernel extension, no lowering your system's security, and no reboot into Recovery Mode.
+  c2_title: Real read &amp; write
+  c2_desc: Read-Write mounting via <code>ntfs-3g</code>, plus Read-Only, Unmount, Eject and Repair.
+  c3_title: Auto-mount
+  c3_desc: Optional — when an NTFS disk is plugged in it mounts read-write with no click and no prompt.
+format:
+  eyebrow: Formats &amp; media
+  title: The filesystem decides — not the kind of disk
+  lead: HDD, SSD, NVMe, flash drive, SD card — all the same. Wijaya focuses on NTFS.
+  n_title: NTFS → needs Wijaya
+  n_desc: macOS can only <em>read</em> NTFS. Wijaya gives full read-write via <code>ntfs-3g</code>, including NTFS-formatted SSDs.
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: Already read-write on macOS. Wijaya still lists them with their status.
+  footnote: ext4 / Btrfs (Linux) are not supported yet.
+shots:
+  eyebrow: Screenshots
+  title: Looks like a normal Mac app
+  alt1: Wijaya app window showing an NTFS disk with its status and mount button
+  cap1: Main window
+  alt2: FUSE-T panel showing an active connection over NFS
+  cap2: FUSE-T active
+  alt3: The fuse-t volume appearing in Finder's Locations
+  cap3: Shows up in Finder
+install:
+  eyebrow: Install
+  title: Full guide (5 steps)
+  lead: About 5 minutes. Requires Homebrew and macOS 14+ on Apple Silicon.
+  s1_title: Install FUSE-T (prerequisite)
+  s1_desc: FUSE-T provides the FUSE layer without a kernel extension.
+  s2_title: Download &amp; install Wijaya
+  s2_desc: Grab the <code>.dmg</code> from Releases, open it, then run the installer. Since it isn't signed by Apple, open it with <strong>right-click → Open</strong>.
+  s3_title: Grant Full Disk Access
+  s3_desc: System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> → <code>+</code> → <code>⌘⇧G</code>. Required, because macOS blocks <code>/dev/disk</code> even for root.
+  s4_title: Open Wijaya &amp; mount
+  s4_desc: Plug in your NTFS disk → click <strong>Mount Read-Write</strong> → enter your admin password.
+  s5_title: Always Eject before unplugging
+  s5_desc: FUSE-T has a write cache. Click <strong>Eject</strong> first, then unplug.
+  readme: Prefer to build from source? Full steps are in the README.
+faq:
+  eyebrow: FAQ
+  title: Frequently asked questions
+  q1: Why the “unidentified developer” warning?
+  a1: Because the package isn't signed by Apple. Official signing needs the Apple Developer Program at $99/year, and this project chose to stay free.
+  q2: Why is Full Disk Access needed?
+  a2: Since macOS Sequoia, TCC blocks access to <code>/dev/disk</code> even for root processes.
+  q3: I got “NTFS hibernated / unsafe state”.
+  a3: The drive wasn't shut down cleanly from Windows (Fast Startup). Boot Windows, turn Fast Startup off, then do a full Shutdown.
+  q4: Is it safe for important data?
+  a4: Always click <strong>Eject</strong> before unplugging. And keep backups.
+footer:
+  tagline: Read-write NTFS GUI for macOS.
+  license: MIT License · Free forever.
+  repos: Repository
+  guide: Guide
+  releases: Releases
+  legal: Built with ntfs-3g (GPL-2.0/LGPL-2.0) and FUSE-T. Not an Apple product.
+ui:
+  skip: Skip to content
+  language: Language
+  copy: Copy
+  copied: Copied
+  theme: Theme
+  to_light: Switch to light mode
+  to_dark: Switch to dark mode

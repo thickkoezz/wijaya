@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — Mac에서 NTFS 디스크 읽기/쓰기 (무료·오픈 소스)
+  description: Wijaya는 NTFS 디스크(HDD, SSD, NVMe)를 macOS에서 읽고 쓸 수 있게 합니다. 무료, 오픈 소스(MIT), ntfs-3g + FUSE-T 기반.
+nav:
+  features: 기능
+  format: 포맷
+  screenshots: 스크린샷
+  install: 설치
+  faq: FAQ
+  github: GitHub
+hero:
+  eyebrow: 무료 · 오픈 소스 · MIT
+  title: Mac에서 NTFS 디스크를 읽고 쓰세요 — 유료 소프트웨어 없이.
+  lead: Wijaya는 <strong>NTFS 디스크</strong>(HDD, SSD, NVMe, USB 메모리)를 Finder에서 쓸 수 있게 합니다. <code>ntfs-3g</code> + FUSE-T 기반.
+  download: 다운로드 (.dmg)
+  source: 소스 보기
+  note: <strong>유료 Developer ID를 쓰지 않습니다.</strong> Apple 서명이 없어 처음 열 때 <strong>우클릭 → 열기</strong>만 하면 됩니다(Homebrew로 설치하면 경고가 없습니다). 이해해 주셔서 감사합니다.
+  shot_caption: Wijaya.app — 볼륨 감지, 한 번의 클릭으로 마운트, 투명한 로그.
+features:
+  eyebrow: Wijaya를 쓰는 이유
+  title: 다른 무료 도구가 포기하는 곳에서도 동작합니다
+  c1_title: kext 불필요 (FUSE-T)
+  c1_desc: 커널 확장이 필요 없고, 시스템 보안을 낮출 필요도, 복구 모드로 재부팅할 필요도 없습니다.
+  c2_title: 진짜 읽기와 쓰기
+  c2_desc: <code>ntfs-3g</code>로 Read-Write 마운트. Read-Only, Unmount, Eject, Repair도 제공합니다.
+  c3_title: 자동 마운트
+  c3_desc: 선택 사항 — NTFS 디스크를 꽂으면 클릭도 비밀번호도 없이 read-write로 마운트됩니다.
+format:
+  eyebrow: 포맷과 매체
+  title: 기준은 파일 시스템이며 디스크 종류가 아닙니다
+  lead: HDD, SSD, NVMe, USB 메모리, SD 카드 — 모두 같습니다. Wijaya는 NTFS에 집중합니다.
+  n_title: NTFS → Wijaya 필요
+  n_desc: macOS는 NTFS를 <em>읽기</em>만 할 수 있습니다. Wijaya는 <code>ntfs-3g</code>로 완전한 읽기/쓰기를 제공하며, NTFS로 포맷된 SSD도 포함됩니다.
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: macOS에서 이미 읽기/쓰기가 됩니다. Wijaya는 그래도 상태와 함께 표시합니다.
+  footnote: ext4 / Btrfs(Linux)는 아직 지원하지 않습니다.
+shots:
+  eyebrow: 스크린샷
+  title: 평범한 Mac 앱처럼 보입니다
+  alt1: NTFS 디스크와 상태, 마운트 버튼을 보여 주는 Wijaya 창
+  cap1: 메인 창
+  alt2: NFS로 연결된 FUSE-T 패널
+  cap2: FUSE-T 활성
+  alt3: Finder의 Locations에 나타난 fuse-t 볼륨
+  cap3: Finder에 표시됨
+install:
+  eyebrow: 설치
+  title: 전체 안내(5단계)
+  lead: 약 5분. Homebrew와 Apple Silicon의 macOS 14+가 필요합니다.
+  s1_title: FUSE-T 설치(선행 조건)
+  s1_desc: FUSE-T는 커널 확장 없이 FUSE 계층을 제공합니다.
+  s2_title: Wijaya 다운로드 및 설치
+  s2_desc: Releases에서 <code>.dmg</code>를 받아 열고 설치 프로그램을 실행하세요. Apple 서명이 없으므로 <strong>우클릭 → 열기</strong>로 여세요.
+  s3_title: Full Disk Access 허용
+  s3_desc: System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> → <code>+</code> → <code>⌘⇧G</code>. macOS는 root에게도 <code>/dev/disk</code>를 차단하므로 필수입니다.
+  s4_title: Wijaya를 열고 마운트
+  s4_desc: NTFS 디스크를 연결 → <strong>Mount Read-Write</strong> 클릭 → 관리자 비밀번호 입력.
+  s5_title: 분리 전에 항상 Eject
+  s5_desc: FUSE-T에는 쓰기 캐시가 있습니다. 먼저 <strong>Eject</strong>를 누르고 분리하세요.
+  readme: 소스에서 직접 빌드하시겠어요? 전체 절차는 README에 있습니다.
+faq:
+  eyebrow: FAQ
+  title: 자주 묻는 질문
+  q1: “unidentified developer” 경고가 뜨는 이유는?
+  a1: 패키지가 Apple 서명을 받지 않았기 때문입니다. 공식 서명에는 연 99달러의 Apple Developer Program이 필요하며, 이 프로젝트는 무료를 선택했습니다.
+  q2: Full Disk Access가 왜 필요한가요?
+  a2: macOS Sequoia부터 TCC가 root 프로세스에도 <code>/dev/disk</code> 접근을 차단합니다.
+  q3: “NTFS hibernated / unsafe state”가 나왔습니다.
+  a3: Windows에서 정상 종료되지 않았습니다(Fast Startup). Windows로 부팅해 Fast Startup을 끄고 완전 종료하세요.
+  q4: 중요한 데이터에 안전한가요?
+  a4: 분리 전에 항상 <strong>Eject</strong>를 누르세요. 그리고 백업을 유지하세요.
+footer:
+  tagline: macOS용 NTFS 읽기/쓰기 GUI.
+  license: MIT 라이선스 · 영구 무료.
+  repos: 저장소
+  guide: 가이드
+  releases: 릴리스
+  legal: ntfs-3g(GPL-2.0/LGPL-2.0)와 FUSE-T로 만들어졌습니다. Apple 제품이 아닙니다.
+ui:
+  skip: 본문으로 이동
+  language: 언어
+  copy: 복사
+  copied: 복사됨
+  theme: 테마
+  to_light: 라이트 모드로 전환
+  to_dark: 다크 모드로 전환

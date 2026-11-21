@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — 在 Mac 上读写 NTFS 磁盘（免费、开源）
+  description: Wijaya 让 NTFS 磁盘（HDD / SSD / NVMe）在 macOS 上可读可写。免费、开源（MIT），基于 ntfs-3g + FUSE-T。
+nav:
+  features: 功能
+  format: 格式
+  screenshots: 截图
+  install: 安装
+  faq: FAQ
+  github: GitHub
+hero:
+  eyebrow: 免费 · 开源 · MIT
+  title: 在 Mac 上读写 NTFS 磁盘 —— 无需付费软件。
+  lead: Wijaya 让 <strong>NTFS 磁盘</strong>（HDD / SSD / NVMe / U 盘）在 Finder 中可写，基于 <code>ntfs-3g</code> + FUSE-T。
+  download: 下载 (.dmg)
+  source: 查看源码
+  note: <strong>不使用付费的 Developer ID。</strong> 该安装包没有 Apple 签名，首次打开只需<strong>右键 → 打开</strong>（或通过 Homebrew 安装，不会有警告）。感谢你的理解。
+  shot_caption: Wijaya.app —— 自动识别卷宗、一键挂载、透明的日志。
+features:
+  eyebrow: 为什么选 Wijaya
+  title: 在其他免费工具放弃的地方依然可用
+  c1_title: 无需 kext（FUSE-T）
+  c1_desc: 不需要内核扩展，不必降低系统安全性，也无需进入恢复模式重启。
+  c2_title: 真正的读写
+  c2_desc: 通过 <code>ntfs-3g</code> 进行 Read-Write 挂载，并提供 Read-Only、Unmount、Eject 与 Repair。
+  c3_title: 自动挂载
+  c3_desc: 可选 —— 插入 NTFS 磁盘即以 read-write 挂载，无需点击，也无需密码。
+format:
+  eyebrow: 格式与介质
+  title: 决定因素是文件系统，而不是磁盘类型
+  lead: HDD、SSD、NVMe、U 盘、SD 卡 —— 都一样。Wijaya 专注于 NTFS。
+  n_title: NTFS → 需要 Wijaya
+  n_desc: macOS 只能<em>读取</em> NTFS。Wijaya 通过 <code>ntfs-3g</code> 提供完整读写，包括 NTFS 格式的 SSD。
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: 在 macOS 上本来就可读写。Wijaya 仍会列出并显示其状态。
+  footnote: ext4 / Btrfs（Linux）暂不支持。
+shots:
+  eyebrow: 截图
+  title: 看起来就是普通的 Mac 应用
+  alt1: Wijaya 窗口，显示 NTFS 磁盘、状态与挂载按钮
+  cap1: 主窗口
+  alt2: FUSE-T 面板，显示通过 NFS 的活动连接
+  cap2: FUSE-T 已启用
+  alt3: fuse-t 卷宗出现在 Finder 的 Locations 中
+  cap3: 出现在 Finder 中
+install:
+  eyebrow: 安装
+  title: 完整指南（5 步）
+  lead: 大约 5 分钟。需要 Homebrew 与 Apple Silicon 上的 macOS 14+。
+  s1_title: 安装 FUSE-T（前置条件）
+  s1_desc: FUSE-T 提供无需内核扩展的 FUSE 层。
+  s2_title: 下载并安装 Wijaya
+  s2_desc: 从 Releases 获取 <code>.dmg</code>，打开后运行安装器。由于没有 Apple 签名，请用<strong>右键 → 打开</strong>。
+  s3_title: 授予 Full Disk Access
+  s3_desc: System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> → <code>+</code> → <code>⌘⇧G</code>。必须授予，因为 macOS 连 root 都拦截 <code>/dev/disk</code>。
+  s4_title: 打开 Wijaya 并挂载
+  s4_desc: 插入 NTFS 磁盘 → 点击 <strong>Mount Read-Write</strong> → 输入管理员密码。
+  s5_title: 拔出前务必先 Eject
+  s5_desc: FUSE-T 有写入缓存。先点 <strong>Eject</strong>，再拔出。
+  readme: 想从源码构建？完整步骤都在 README 里。
+faq:
+  eyebrow: FAQ
+  title: 常见问题
+  q1: 为什么会出现 “unidentified developer” 警告？
+  a1: 因为安装包没有 Apple 签名。官方签名需要每年 99 美元的 Apple Developer Program，而本项目选择保持免费。
+  q2: 为什么需要 Full Disk Access？
+  a2: 自 macOS Sequoia 起，TCC 连 root 进程访问 <code>/dev/disk</code> 也会拦截。
+  q3: 出现了 “NTFS hibernated / unsafe state”。
+  a3: 该磁盘没有从 Windows 正常关机（Fast Startup）。启动 Windows，关闭 Fast Startup，然后完全关机。
+  q4: 对重要数据安全吗？
+  a4: 拔出前务必点击 <strong>Eject</strong>。并且请保留备份。
+footer:
+  tagline: 适用于 macOS 的 NTFS 读写 GUI。
+  license: MIT 许可证 · 永久免费。
+  repos: 代码仓库
+  guide: 指南
+  releases: 发行版
+  legal: 使用 ntfs-3g（GPL-2.0/LGPL-2.0）与 FUSE-T 构建。并非 Apple 产品。
+ui:
+  skip: 跳到内容
+  language: 语言
+  copy: 复制
+  copied: 已复制
+  theme: 主题
+  to_light: 切换到浅色模式
+  to_dark: 切换到深色模式

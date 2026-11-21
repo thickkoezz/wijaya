@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — Lecture/écriture NTFS sur Mac (gratuit et open source)
+  description: Wijaya permet de lire et écrire des disques NTFS — HDD, SSD ou NVMe — sur macOS. Gratuit, open source (MIT), basé sur ntfs-3g + FUSE-T.
+nav:
+  features: Fonctions
+  format: Formats
+  screenshots: Captures
+  install: Installation
+  faq: FAQ
+  github: GitHub
+hero:
+  eyebrow: Gratuit et open source · MIT
+  title: Lisez et écrivez vos disques NTFS sur Mac, sans logiciel payant.
+  lead: Wijaya rend les <strong>disques NTFS</strong> — HDD, SSD, NVMe, clés USB — inscriptibles dans le Finder, grâce à <code>ntfs-3g</code> + FUSE-T.
+  download: Télécharger (.dmg)
+  source: Voir le code
+  note: <strong>Pas de Developer ID payant.</strong> Le paquet n'est pas signé par Apple : au premier lancement, faites simplement <strong>clic droit → Ouvrir</strong> (ou installez via Homebrew, qui évite l'avertissement). Merci de votre compréhension.
+  shot_caption: Wijaya.app — détection des volumes, montage en un clic, journal transparent.
+features:
+  eyebrow: Pourquoi Wijaya
+  title: Fonctionne là où les autres outils gratuits échouent
+  c1_title: Sans kext (FUSE-T)
+  c1_desc: Aucune extension noyau, aucune baisse de sécurité du système et aucun redémarrage en mode Recovery.
+  c2_title: Vraie lecture/écriture
+  c2_desc: Montage Read-Write via <code>ntfs-3g</code>, plus Read-Only, Unmount, Eject et Repair.
+  c3_title: Montage automatique
+  c3_desc: En option — dès qu'un disque NTFS est branché, il est monté en read-write sans clic ni mot de passe.
+format:
+  eyebrow: Formats et supports
+  title: C'est le système de fichiers qui compte, pas le type de disque
+  lead: HDD, SSD, NVMe, clé USB, carte SD — c'est pareil. Wijaya se concentre sur NTFS.
+  n_title: NTFS → nécessite Wijaya
+  n_desc: macOS ne peut que <em>lire</em> le NTFS. Wijaya offre une lecture-écriture complète via <code>ntfs-3g</code>, y compris sur les SSD formatés en NTFS.
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: Déjà en lecture-écriture sur macOS. Wijaya les affiche quand même avec leur état.
+  footnote: ext4 / Btrfs (Linux) ne sont pas encore pris en charge.
+shots:
+  eyebrow: Captures
+  title: L'apparence d'une app Mac classique
+  alt1: Fenêtre de Wijaya montrant un disque NTFS avec son état et le bouton de montage
+  cap1: Fenêtre principale
+  alt2: Panneau FUSE-T montrant une connexion active via NFS
+  cap2: FUSE-T actif
+  alt3: Le volume fuse-t apparaissant dans Locations du Finder
+  cap3: Visible dans le Finder
+install:
+  eyebrow: Installation
+  title: Guide complet (5 étapes)
+  lead: Environ 5 minutes. Nécessite Homebrew et macOS 14+ sur Apple Silicon.
+  s1_title: Installer FUSE-T (prérequis)
+  s1_desc: FUSE-T fournit la couche FUSE sans extension noyau.
+  s2_title: Télécharger et installer Wijaya
+  s2_desc: Prenez le <code>.dmg</code> dans Releases, ouvrez-le puis lancez l'installeur. N'étant pas signé par Apple, ouvrez-le avec <strong>clic droit → Ouvrir</strong>.
+  s3_title: Accorder Full Disk Access
+  s3_desc: System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> → <code>+</code> → <code>⌘⇧G</code>. Obligatoire, car macOS bloque <code>/dev/disk</code> même pour root.
+  s4_title: Ouvrir Wijaya et monter
+  s4_desc: Branchez votre disque NTFS → cliquez sur <strong>Mount Read-Write</strong> → saisissez votre mot de passe admin.
+  s5_title: Toujours éjecter avant de débrancher
+  s5_desc: FUSE-T utilise un cache d'écriture. Cliquez sur <strong>Eject</strong> d'abord, puis débranchez.
+  readme: Vous préférez compiler depuis les sources ? Les étapes sont dans le README.
+faq:
+  eyebrow: FAQ
+  title: Questions fréquentes
+  q1: Pourquoi l'avertissement « unidentified developer » ?
+  a1: Parce que le paquet n'est pas signé par Apple. La signature officielle exige l'Apple Developer Program à 99 $/an, et ce projet a choisi de rester gratuit.
+  q2: Pourquoi Full Disk Access est-il nécessaire ?
+  a2: Depuis macOS Sequoia, TCC bloque l'accès à <code>/dev/disk</code> même pour les processus root.
+  q3: J'ai eu « NTFS hibernated / unsafe state ».
+  a3: Le disque n'a pas été arrêté proprement depuis Windows (Fast Startup). Démarrez Windows, désactivez Fast Startup, puis faites un arrêt complet.
+  q4: Est-ce sûr pour des données importantes ?
+  a4: Cliquez toujours sur <strong>Eject</strong> avant de débrancher. Et gardez des sauvegardes.
+footer:
+  tagline: GUI lecture-écriture NTFS pour macOS.
+  license: Licence MIT · Gratuit pour toujours.
+  repos: Dépôt
+  guide: Guide
+  releases: Versions
+  legal: Construit avec ntfs-3g (GPL-2.0/LGPL-2.0) et FUSE-T. N'est pas un produit Apple.
+ui:
+  skip: Aller au contenu
+  language: Langue
+  copy: Copier
+  copied: Copié
+  theme: Thème
+  to_light: Passer en mode clair
+  to_dark: Passer en mode sombre

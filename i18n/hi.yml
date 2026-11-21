@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — Mac पर NTFS डिस्क पढ़ें और लिखें (मुफ़्त और ओपन सोर्स)
+  description: Wijaya NTFS डिस्क — HDD, SSD या NVMe — को macOS पर पढ़ने-लिखने योग्य बनाता है। मुफ़्त, ओपन सोर्स (MIT), ntfs-3g + FUSE-T पर आधारित।
+nav:
+  features: विशेषताएँ
+  format: फ़ॉर्मैट
+  screenshots: स्क्रीनशॉट
+  install: इंस्टॉल
+  faq: FAQ
+  github: GitHub
+hero:
+  eyebrow: मुफ़्त · ओपन सोर्स · MIT
+  title: Mac पर NTFS डिस्क पढ़ें और लिखें — बिना किसी पेड सॉफ़्टवेयर के।
+  lead: Wijaya <strong>NTFS डिस्क</strong> — HDD, SSD, NVMe, फ्लैश ड्राइव — को Finder से लिखने योग्य बनाता है, <code>ntfs-3g</code> + FUSE-T पर आधारित।
+  download: डाउनलोड (.dmg)
+  source: सोर्स देखें
+  note: <strong>कोई पेड Developer ID नहीं।</strong> यह पैकेज Apple द्वारा हस्ताक्षरित नहीं है, इसलिए पहली बार खोलते समय सिर्फ़ <strong>राइट-क्लिक → Open</strong> करें (या Homebrew से इंस्टॉल करें, वहाँ चेतावनी नहीं आती)। समझने के लिए धन्यवाद।
+  shot_caption: Wijaya.app — वॉल्यूम पहचान, एक क्लिक में माउंट, पारदर्शी लॉग।
+features:
+  eyebrow: Wijaya क्यों
+  title: वहाँ भी काम करता है जहाँ दूसरे मुफ़्त टूल हार जाते हैं
+  c1_title: kext की ज़रूरत नहीं (FUSE-T)
+  c1_desc: न kernel extension चाहिए, न सिस्टम की सुरक्षा घटानी पड़ती है, और न Recovery Mode में रीस्टार्ट।
+  c2_title: असली पढ़ना-लिखना
+  c2_desc: <code>ntfs-3g</code> से Read-Write माउंट, साथ में Read-Only, Unmount, Eject और Repair।
+  c3_title: ऑटो-माउंट
+  c3_desc: वैकल्पिक — NTFS डिस्क लगाते ही बिना क्लिक और बिना पासवर्ड read-write में माउंट हो जाता है।
+format:
+  eyebrow: फ़ॉर्मैट और मीडिया
+  title: फ़ैसला फ़ाइलसिस्टम करता है, डिस्क का प्रकार नहीं
+  lead: HDD, SSD, NVMe, फ्लैश ड्राइव, SD कार्ड — सब एक जैसे। Wijaya NTFS पर केंद्रित है।
+  n_title: NTFS → Wijaya चाहिए
+  n_desc: macOS NTFS को सिर्फ़ <em>पढ़</em> सकता है। Wijaya <code>ntfs-3g</code> से पूरा पढ़ना-लिखना देता है, NTFS वाले SSD पर भी।
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: macOS पर ये पहले से पढ़ने-लिखने योग्य हैं। Wijaya फिर भी इन्हें स्थिति के साथ दिखाता है।
+  footnote: ext4 / Btrfs (Linux) अभी समर्थित नहीं हैं।
+shots:
+  eyebrow: स्क्रीनशॉट
+  title: आम Mac ऐप जैसा दिखता है
+  alt1: Wijaya विंडो जिसमें NTFS डिस्क, उसकी स्थिति और माउंट बटन है
+  cap1: मुख्य विंडो
+  alt2: FUSE-T पैनल जिसमें NFS कनेक्शन सक्रिय है
+  cap2: FUSE-T सक्रिय
+  alt3: Finder के Locations में दिखता fuse-t वॉल्यूम
+  cap3: Finder में दिखता है
+install:
+  eyebrow: इंस्टॉलेशन
+  title: पूरी गाइड (5 चरण)
+  lead: लगभग 5 मिनट। Homebrew और Apple Silicon पर macOS 14+ चाहिए।
+  s1_title: FUSE-T इंस्टॉल करें (पूर्वापेक्षा)
+  s1_desc: FUSE-T बिना kernel extension के FUSE लेयर देता है।
+  s2_title: Wijaya डाउनलोड और इंस्टॉल करें
+  s2_desc: Releases से <code>.dmg</code> लें, खोलें और इंस्टॉलर चलाएँ। Apple हस्ताक्षर न होने के कारण <strong>राइट-क्लिक → Open</strong> से खोलें।
+  s3_title: Full Disk Access दें
+  s3_desc: System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> → <code>+</code> → <code>⌘⇧G</code>। ज़रूरी है, क्योंकि macOS root के लिए भी <code>/dev/disk</code> रोकता है।
+  s4_title: Wijaya खोलें और माउंट करें
+  s4_desc: अपनी NTFS डिस्क लगाएँ → <strong>Mount Read-Write</strong> पर क्लिक करें → एडमिन पासवर्ड डालें।
+  s5_title: निकालने से पहले हमेशा Eject
+  s5_desc: FUSE-T में राइट कैश है। पहले <strong>Eject</strong> दबाएँ, फिर निकालें।
+  readme: सोर्स से बनाना चाहेंगे? पूरे चरण README में हैं।
+faq:
+  eyebrow: FAQ
+  title: अक्सर पूछे जाने वाले सवाल
+  q1: “unidentified developer” चेतावनी क्यों आती है?
+  a1: क्योंकि पैकेज Apple द्वारा हस्ताक्षरित नहीं है। आधिकारिक हस्ताक्षर के लिए $99/वर्ष का Apple Developer Program चाहिए, और इस प्रोजेक्ट ने मुफ़्त रहना चुना।
+  q2: Full Disk Access क्यों चाहिए?
+  a2: macOS Sequoia से, TCC root प्रोसेस के लिए भी <code>/dev/disk</code> तक पहुँच रोकता है।
+  q3: “NTFS hibernated / unsafe state” दिखा।
+  a3: डिस्क Windows से ठीक से बंद नहीं हुई (Fast Startup)। Windows बूट करें, Fast Startup बंद करें, फिर पूरा Shutdown करें।
+  q4: ज़रूरी डेटा के लिए सुरक्षित है?
+  a4: निकालने से पहले हमेशा <strong>Eject</strong> दबाएँ। और बैकअप रखें।
+footer:
+  tagline: macOS के लिए NTFS पढ़ने/लिखने का GUI।
+  license: MIT लाइसेंस · हमेशा मुफ़्त।
+  repos: रिपॉज़िटरी
+  guide: गाइड
+  releases: रिलीज़
+  legal: ntfs-3g (GPL-2.0/LGPL-2.0) और FUSE-T से बनाया गया। Apple का उत्पाद नहीं।
+ui:
+  skip: सामग्री पर जाएँ
+  language: भाषा
+  copy: कॉपी
+  copied: कॉपी हो गया
+  theme: थीम
+  to_light: लाइट मोड पर जाएँ
+  to_dark: डार्क मोड पर जाएँ

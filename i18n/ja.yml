@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — Mac で NTFS ディスクを読み書き（無料・オープンソース）
+  description: Wijaya は NTFS ディスク（HDD / SSD / NVMe）を macOS で読み書き可能にします。無料・オープンソース（MIT）、ntfs-3g + FUSE-T ベース。
+nav:
+  features: 機能
+  format: フォーマット
+  screenshots: スクリーンショット
+  install: インストール
+  faq: FAQ
+  github: GitHub
+hero:
+  eyebrow: 無料・オープンソース · MIT
+  title: Mac で NTFS ディスクを読み書き — 有料ソフトは不要。
+  lead: Wijaya は <strong>NTFS ディスク</strong>（HDD / SSD / NVMe / USB メモリ）を Finder から書き込み可能にします。<code>ntfs-3g</code> + FUSE-T を利用。
+  download: ダウンロード (.dmg)
+  source: ソースを見る
+  note: <strong>有料の Developer ID は使いません。</strong> Apple の署名がないため、初回は<strong>右クリック → 開く</strong>だけで大丈夫です（Homebrew なら警告は出ません）。ご理解に感謝します。
+  shot_caption: Wijaya.app — ボリューム検出、ワンクリックでマウント、透明なログ。
+features:
+  eyebrow: なぜ Wijaya
+  title: 他の無料ツールが諦める環境でも動きます
+  c1_title: kext 不要（FUSE-T）
+  c1_desc: カーネル拡張が不要で、セキュリティを下げる必要も、リカバリモードでの再起動も不要です。
+  c2_title: 本物の読み書き
+  c2_desc: <code>ntfs-3g</code> による Read-Write マウント。Read-Only、Unmount、Eject、Repair も備えます。
+  c3_title: 自動マウント
+  c3_desc: オプション — NTFS ディスクを挿すと、クリックもパスワードも不要で read-write でマウントします。
+format:
+  eyebrow: フォーマットと媒体
+  title: 決めるのはファイルシステム、ディスクの種類ではありません
+  lead: HDD、SSD、NVMe、USB メモリ、SD カード — どれも同じです。Wijaya は NTFS に特化。
+  n_title: NTFS → Wijaya が必要
+  n_desc: macOS は NTFS を<em>読む</em>ことしかできません。Wijaya は <code>ntfs-3g</code> で完全な読み書きを提供します。NTFS の SSD も同様です。
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: macOS で既に読み書き可能です。Wijaya は状態付きで一覧に表示します。
+  footnote: ext4 / Btrfs（Linux）は未対応です。
+shots:
+  eyebrow: スクリーンショット
+  title: ごく普通の Mac アプリの見た目
+  alt1: NTFS ディスクと状態、マウントボタンを表示する Wijaya のウィンドウ
+  cap1: メインウィンドウ
+  alt2: NFS で接続中の FUSE-T パネル
+  cap2: FUSE-T 稼働中
+  alt3: Finder の Locations に表示された fuse-t ボリューム
+  cap3: Finder に表示
+install:
+  eyebrow: インストール
+  title: 完全ガイド（5 ステップ）
+  lead: およそ 5 分。Homebrew と Apple Silicon 上の macOS 14+ が必要です。
+  s1_title: FUSE-T をインストール（前提）
+  s1_desc: FUSE-T はカーネル拡張なしで FUSE レイヤーを提供します。
+  s2_title: Wijaya をダウンロードしてインストール
+  s2_desc: Releases から <code>.dmg</code> を取得して開き、インストーラを実行します。Apple の署名がないため<strong>右クリック → 開く</strong>で開きます。
+  s3_title: Full Disk Access を許可
+  s3_desc: System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> → <code>+</code> → <code>⌘⇧G</code>。macOS は root でも <code>/dev/disk</code> を遮断するため必須です。
+  s4_title: Wijaya を開いてマウント
+  s4_desc: NTFS ディスクを挿す → <strong>Mount Read-Write</strong> をクリック → 管理者パスワードを入力。
+  s5_title: 取り外す前に必ず Eject
+  s5_desc: FUSE-T には書き込みキャッシュがあります。先に <strong>Eject</strong> を押してから抜いてください。
+  readme: ソースからビルドしたい場合の手順は README にあります。
+faq:
+  eyebrow: FAQ
+  title: よくある質問
+  q1: なぜ “unidentified developer” の警告が出る？
+  a1: パッケージが Apple の署名を受けていないためです。公式署名には年 99 ドルの Apple Developer Program が必要で、このプロジェクトは無料を選びました。
+  q2: なぜ Full Disk Access が必要？
+  a2: macOS Sequoia 以降、TCC は root プロセスでも <code>/dev/disk</code> へのアクセスを遮断します。
+  q3: “NTFS hibernated / unsafe state” と出た。
+  a3: Windows から正常にシャットダウンされていません（Fast Startup）。Windows を起動して Fast Startup を無効にし、完全にシャットダウンしてください。
+  q4: 重要なデータでも安全？
+  a4: 抜く前に必ず <strong>Eject</strong> をクリック。そしてバックアップを保ってください。
+footer:
+  tagline: macOS 向け NTFS 読み書き GUI。
+  license: MIT ライセンス · ずっと無料。
+  repos: リポジトリ
+  guide: ガイド
+  releases: リリース
+  legal: ntfs-3g（GPL-2.0/LGPL-2.0）と FUSE-T を使用。Apple 製品ではありません。
+ui:
+  skip: コンテンツへ移動
+  language: 言語
+  copy: コピー
+  copied: コピーしました
+  theme: テーマ
+  to_light: ライトモードに切り替え
+  to_dark: ダークモードに切り替え

@@ -1,0 +1,86 @@
+meta:
+  title: Wijaya — קריאה וכתיבה של כונני NTFS במק (חינם ובקוד פתוח)
+  description: Wijaya מאפשר לקרוא ולכתוב כונני NTFS — HDD, SSD או NVMe — ב-macOS. חינם, קוד פתוח (MIT), מבוסס על ntfs-3g + FUSE-T.
+nav:
+  features: תכונות
+  format: פורמטים
+  screenshots: צילומי מסך
+  install: התקנה
+  faq: שאלות נפוצות
+  github: GitHub
+hero:
+  eyebrow: חינם · קוד פתוח · MIT
+  title: קראו וכתבו לכונני NTFS במק — בלי תוכנה בתשלום.
+  lead: Wijaya מאפשר ל<strong>כונני NTFS</strong> — HDD, SSD, NVMe, דיסק און קי — להיות ניתנים לכתיבה מ-Finder, על בסיס <code>ntfs-3g</code> + FUSE-T.
+  download: הורדה (.dmg)
+  source: הצגת הקוד
+  note: <strong>בלי Developer ID בתשלום.</strong> החבילה אינה חתומה על ידי Apple, ולכן בפתיחה הראשונה פשוט <strong>לחיצה ימנית → פתח</strong> (או התקנה דרך Homebrew, בלי אזהרה). תודה על ההבנה.
+  shot_caption: Wijaya.app — זיהוי כוננים, עגינה בלחיצה אחת, יומן שקוף.
+features:
+  eyebrow: למה Wijaya
+  title: עובד היכן שכלים חינמיים אחרים מוותרים
+  c1_title: בלי kext (FUSE-T)
+  c1_desc: בלי הרחבת kernel, בלי להוריד את אבטחת המערכת ובלי אתחול למצב Recovery.
+  c2_title: קריאה וכתיבה אמיתיות
+  c2_desc: עגינת Read-Write דרך <code>ntfs-3g</code>, ובנוסף Read-Only, Unmount, Eject ו-Repair.
+  c3_title: עגינה אוטומטית
+  c3_desc: אופציונלי — עם חיבור כונן NTFS הוא נעגן לקריאה-כתיבה בלי לחיצה ובלי סיסמה.
+format:
+  eyebrow: פורמטים ומדיה
+  title: מערכת הקבצים היא שקובעת, לא סוג הכונן
+  lead: HDD, SSD, NVMe, דיסק און קי, כרטיס SD — הכול אותו דבר. Wijaya מתמקד ב-NTFS.
+  n_title: NTFS → דורש את Wijaya
+  n_desc: macOS יכול רק <em>לקרוא</em> NTFS. Wijaya נותן קריאה וכתיבה מלאה דרך <code>ntfs-3g</code>, כולל SSD בפורמט NTFS.
+  o_title: exFAT · FAT32 · APFS · HFS+
+  o_desc: כבר ניתנים לקריאה וכתיבה ב-macOS. Wijaya עדיין מציג אותם עם מצבם.
+  footnote: ext4 / Btrfs (לינוקס) עדיין לא נתמכים.
+shots:
+  eyebrow: צילומי מסך
+  title: נראה כמו אפליקציית מק רגילה
+  alt1: חלון Wijaya עם כונן NTFS, מצבו וכפתור העגינה
+  cap1: החלון הראשי
+  alt2: פאנל FUSE-T עם חיבור פעיל דרך NFS
+  cap2: FUSE-T פעיל
+  alt3: כרך fuse-t מופיע ב-Locations ב-Finder
+  cap3: מופיע ב-Finder
+install:
+  eyebrow: התקנה
+  title: מדריך מלא (5 שלבים)
+  lead: כ-5 דקות. דרושים Homebrew ו-macOS 14+ על Apple Silicon.
+  s1_title: התקינו FUSE-T (דרישה מוקדמת)
+  s1_desc: FUSE-T מספק שכבת FUSE בלי הרחבת kernel.
+  s2_title: הורידו והתקינו את Wijaya
+  s2_desc: קחו את <code>.dmg</code> מ-Releases, פתחו והריצו את המתקין. כיוון שאינו חתום על ידי Apple, פתחו אותו ב<strong>לחיצה ימנית → פתח</strong>.
+  s3_title: העניקו Full Disk Access
+  s3_desc: System Settings → Privacy &amp; Security → <strong>Full Disk Access</strong> → <code>+</code> → <code>⌘⇧G</code>. חובה, כי macOS חוסם <code>/dev/disk</code> אפילו ל-root.
+  s4_title: פתחו את Wijaya ועגנו
+  s4_desc: חברו את כונן ה-NTFS → לחצו <strong>Mount Read-Write</strong> → הזינו סיסמת מנהל.
+  s5_title: תמיד בצעו Eject לפני ניתוק
+  s5_desc: ל-FUSE-T יש מטמון כתיבה. לחצו קודם <strong>Eject</strong> ואז נתקו.
+  readme: מעדיפים לבנות מהמקור? כל השלבים ב-README.
+faq:
+  eyebrow: שאלות נפוצות
+  title: שאלות נפוצות
+  q1: למה מופיעה אזהרת “unidentified developer”?
+  a1: כי החבילה אינה חתומה על ידי Apple. חתימה רשמית דורשת Apple Developer Program בכ-99 דולר לשנה, והפרויקט הזה בחר להישאר חינמי.
+  q2: למה צריך Full Disk Access?
+  a2: מאז macOS Sequoia, TCC חוסם גישה ל-<code>/dev/disk</code> אפילו לתהליכי root.
+  q3: קיבלתי “NTFS hibernated / unsafe state”.
+  a3: הכונן לא כובה כראוי מ-Windows (Fast Startup). אתחלו ל-Windows, כבו את Fast Startup ובצעו כיבוי מלא.
+  q4: זה בטוח למידע חשוב?
+  a4: תמיד לחצו <strong>Eject</strong> לפני ניתוק. ושמרו גיבויים.
+footer:
+  tagline: ממשק קריאה וכתיבה ל-NTFS עבור macOS.
+  license: רישיון MIT · חינם לתמיד.
+  repos: מאגר
+  guide: מדריך
+  releases: גרסאות
+  legal: נבנה עם ntfs-3g (GPL-2.0/LGPL-2.0) ו-FUSE-T. אינו מוצר של Apple.
+ui:
+  skip: דלג לתוכן
+  language: שפה
+  copy: העתק
+  copied: הועתק
+  theme: ערכת נושא
+  to_light: מעבר למצב בהיר
+  to_dark: מעבר למצב כהה
