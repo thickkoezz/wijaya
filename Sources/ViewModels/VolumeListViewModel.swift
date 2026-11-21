@@ -17,6 +17,7 @@ final class VolumeListViewModel: ObservableObject {
 
     private let scanner = DiskScanner()
     private let autoMount = AutoMountInstaller()
+    private var pendingRefresh = false
 
     func bootstrap() {
         fuseStatus = FuseDiagnostics.detect()
@@ -92,12 +93,32 @@ final class VolumeListViewModel: ObservableObject {
     }
 
     func refresh() {
-        guard !isRefreshing else { return }
+        if isRefreshing {
+            pendingRefresh = true
+            return
+        }
         isRefreshing = true
         Task {
             let scanned = await Task.detached(priority: .userInitiated) { [scanner] in scanner.scan() }.value
             self.volumes = scanned
             self.isRefreshing = false
+            if self.pendingRefresh {
+                self.pendingRefresh = false
+                self.refresh()
+            }
+        }
+    }
+
+    /// FUSE-T memasang volume lewat NFS: entri di tabel `mount` (dan notifikasi
+    /// mount/unmount macOS) bisa muncul sesaat setelah helper selesai. Jadi pindai
+    /// ulang beberapa kali agar status di GUI tidak tertinggal.
+    private func refreshAfterAction() {
+        refresh()
+        for delay in [0.4, 1.2, 2.5] {
+            Task {
+                try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                self.refresh()
+            }
         }
     }
 
@@ -152,7 +173,7 @@ final class VolumeListViewModel: ObservableObject {
             if !outcome.detail.isEmpty {
                 self.append(outcome.success ? .info : .error, outcome.detail)
             }
-            self.refresh()
+            self.refreshAfterAction()
         }
     }
 
