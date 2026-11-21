@@ -7,13 +7,17 @@
 ![Price](https://img.shields.io/badge/price-free-22c55e.svg)
 ![Status](https://img.shields.io/badge/status-unsigned%20(no%20paid%20Developer%20ID)-1e293b.svg)
 
-Aplikasi macOS **native (SwiftUI)** untuk membuat HDD **NTFS** bisa dibaca-tulis dari Finder.
-Deteksi volume, **Mount Read-Write**, Mount Read-Only, Unmount, Eject, Repair, dan auto-mount —
-dibungkus di atas driver `ntfs-3g` (open source) + FUSE-T.
+Aplikasi macOS **native (SwiftUI)** untuk membuat **disk NTFS** bisa dibaca-tulis dari Finder —
+apa pun media-nya: **HDD, SSD, NVMe, flashdisk, atau SD card**. Deteksi volume,
+**Mount Read-Write**, Mount Read-Only, Unmount, Eject, Repair, dan auto-mount — dibungkus di atas
+driver `ntfs-3g` (open source) + FUSE-T.
+
+Wijaya fokus pada **NTFS** (satu-satunya format yang macOS tidak bisa tulis sendiri). Format lain
+tetap dikenali dan ditampilkan beserta statusnya — lihat [Format yang didukung](#format-yang-didukung).
 
 🌐 **Situs + panduan lengkap:** <https://thickkoezz.github.io/wijaya/>
 
-![Jendela Wijaya — HDD NTFS "My Passport" dengan status dan tombol Mount Read-Write](public/a.png)
+![Jendela Wijaya — disk NTFS "My Passport" dengan status dan tombol Mount Read-Write](public/a.png)
 
 ---
 
@@ -50,7 +54,7 @@ Apple — lihat [Gratis selamanya](#gratis-selamanya-dan-kenapa-kamu-akan-meliha
 
 | Jendela utama | FUSE-T aktif | Volume di Finder |
 |---|---|---|
-| ![Jendela Wijaya menampilkan HDD NTFS "My Passport" beserta status dan tombol mount](public/a.png) | ![FUSE-T terhubung sebagai NFS dengan opsi Disconnect](public/b.png) | ![Volume "fuse-t" muncul di bagian Locations pada Finder](public/c.png) |
+| ![Jendela Wijaya menampilkan disk NTFS "My Passport" beserta status dan tombol mount](public/a.png) | ![FUSE-T terhubung sebagai NFS dengan opsi Disconnect](public/b.png) | ![Volume "fuse-t" muncul di bagian Locations pada Finder](public/c.png) |
 
 ---
 
@@ -258,7 +262,7 @@ bash scripts/release.sh    # bangun paket + cetak sha256 & potongan cask
 
 ## Cara pakai
 
-1. Colok HDD NTFS → muncul sebagai chip **"Read-Only (macOS)"**.
+1. Colok disk NTFS → muncul sebagai chip **"Read-Only (macOS)"**.
 2. Klik **Mount Read-Write** → masukkan password admin → chip jadi **"Read-Write"**.
 3. Tombol **⋯** memberi opsi: **Hapus hiberfil & mount** (NTFS hibernated) dan **Mount Read-Only**.
 4. **Sebelum mencabut: klik Eject atau Unmount** (FUSE-T punya write cache — cabut tanpa
@@ -275,7 +279,7 @@ admin sekali). Ini memasang:
 | aturan sudo | `/etc/sudoers.d/wijaya-automount` | `NOPASSWD` **hanya** untuk skrip itu |
 | LaunchAgent | `~/Library/LaunchAgents/com.mieky.wijaya.automount.plist` | `WatchPaths=/Volumes` |
 
-Efeknya: begitu HDD NTFS dicolok, otomatis di-mount **read-write** tanpa klik & tanpa password,
+Efeknya: begitu disk NTFS dicolok, otomatis di-mount **read-write** tanpa klik & tanpa password,
 dan tetap bekerja walau aplikasi ditutup. Mematikannya: klik tombol yang sama (ke `OFF`) —
 semua komponen di atas dibersihkan.
 
@@ -305,6 +309,26 @@ Cek aktivitas: `log show --last 5m --predicate 'eventMessage CONTAINS "wijaya-au
 - **Gagal unmount** — tutup file/aplikasi yang memakai volume, lalu coba lagi.
 - **Status salah / "Belum ter-mount" padahal ada** — FUSE-T mount via NFS tidak dikenali
   `diskutil`; Wijaya mendeteksinya lewat tabel `mount`. Tekan Refresh.
+
+---
+
+## Format yang didukung
+
+Wijaya menangani **NTFS** — satu-satunya format yang macOS tidak bisa tulis sendiri. Format lain
+tetap muncul di daftar dengan status jujur, dan **tidak butuh Wijaya** karena macOS sudah
+bisa membacanya sendiri.
+
+| Format | Baca-tulis | Lewat Wijaya? |
+|---|---|---|
+| **NTFS** | ✅ lewat `ntfs-3g` | **ya** — inilah gunanya Wijaya (macOS cuma bisa baca) |
+| exFAT | ✅ bawaan macOS | tidak perlu — Wijaya hanya menampilkan statusnya |
+| FAT32 | ✅ bawaan macOS | tidak perlu |
+| APFS / HFS+ | ✅ bawaan macOS | tidak perlu |
+| ext4 / Btrfs (Linux) | ❌ tidak didukung | di luar cakupan |
+
+**Soal media:** HDD, SSD, NVMe, flashdisk, sampai SD card semuanya sama saja — yang menentukan
+hanyalah **filesystem**, bukan jenis disknya. Jadi **SSD berformat NTFS pun bisa langsung
+dibaca-tulis** oleh Wijaya, sama seperti HDD.
 
 ---
 

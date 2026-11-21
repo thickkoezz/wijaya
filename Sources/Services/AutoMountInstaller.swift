@@ -5,7 +5,7 @@ import Foundation
 ///  - aturan sudo  -> /etc/sudoers.d/wijaya-automount (NOPASSWD, root)
 ///  - LaunchAgent  -> ~/Library/LaunchAgents/com.mieky.wijaya.automount.plist (user)
 ///
-/// LaunchAgent memanggil `sudo -n <skrip>` saat /Volumes berubah, sehingga HDD NTFS
+/// LaunchAgent memanggil `sudo -n <skrip>` saat /Volumes berubah, sehingga disk NTFS
 /// otomatis di-mount read-write tanpa prompt, di konteks sesi user.
 struct AutoMountInstaller {
     static let label = "com.mieky.wijaya.automount"
@@ -55,7 +55,7 @@ struct AutoMountInstaller {
             _ = ProcessRunner.run("/bin/launchctl", ["load", "-w", plistURL.path])
         }
 
-        return .ok("Auto-mount aktif — HDD NTFS akan otomatis read-write saat dicolok.")
+        return .ok("Auto-mount aktif — disk NTFS akan otomatis read-write saat dicolok.")
     }
 
     func disable() -> ActionOutcome {

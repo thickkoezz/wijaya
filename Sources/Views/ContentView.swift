@@ -40,7 +40,7 @@ struct ContentView: View {
                     )
                 }
                 .disabled(vm.autoMountBusy)
-                .help("Mount NTFS read-write otomatis saat HDD dicolok (latar belakang, tanpa prompt)")
+                .help("Mount NTFS read-write otomatis saat disk dicolok (latar belakang, tanpa prompt)")
             }
             ToolbarItem(placement: .automatic) {
                 backendMenu
@@ -92,7 +92,7 @@ struct ContentView: View {
                         .foregroundStyle(.secondary)
                     Text("Tidak ada volume yang terdeteksi")
                         .foregroundStyle(.secondary)
-                    Text("Colok HDD/USB lalu tekan Refresh.")
+                    Text("Colok disk NTFS/USB lalu tekan Refresh.")
                         .font(.callout)
                         .foregroundStyle(.tertiary)
                 }

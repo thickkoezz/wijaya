@@ -8,8 +8,8 @@
 # atribut quarantine), sehingga tidak butuh tanda tangan Apple yang berbayar.
 
 cask "wijaya" do
-  version "1.0"
-  sha256 "2a78b767d5fa4ffee28de14dec76f328362232e8aa3d735fe86f7bea29e64637"
+  version "1.1"
+  sha256 "b05c017bd3ed7cdb74391041b9d78aa24270e402614952872dcd792a6df3b4bf"
 
   url "https://github.com/thickkoezz/wijaya/releases/download/v#{version}/Wijaya-#{version}.dmg",
       verified: "github.com/thickkoezz/wijaya/"

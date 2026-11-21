@@ -108,8 +108,8 @@ Wijaya $VERSION — NTFS baca-tulis untuk macOS
      /bin/bash
      Wijaya.app
 
-4. Buka Wijaya -> klik "Mount Read-Write" pada HDD NTFS.
-   Selalu klik "Eject" sebelum mencabut HDD.
+4. Buka Wijaya -> klik "Mount Read-Write" pada disk NTFS.
+   Selalu klik "Eject" sebelum mencabut disk.
 EOF
 hdiutil create -volname "Wijaya $VERSION" -srcfolder "$DMGSTAGE" \
   -ov -format UDZO "$OUT/Wijaya-$VERSION.dmg" >/dev/null

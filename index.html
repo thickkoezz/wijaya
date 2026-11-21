@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wijaya — Tulis ke HDD NTFS dari Mac (gratis & open source)</title>
-<meta name="description" content="Wijaya membuat HDD NTFS bisa dibaca-tulis di macOS. Gratis, open source (MIT), berbasis ntfs-3g + FUSE-T. Tanpa Developer ID berbayar.">
+<title>Wijaya — Baca-tulis disk NTFS di Mac (gratis & open source)</title>
+<meta name="description" content="Wijaya membuat disk NTFS — HDD, SSD, atau NVMe — bisa dibaca-tulis di macOS. Gratis, open source (MIT), berbasis ntfs-3g + FUSE-T. Tanpa Developer ID berbayar.">
 <meta name="theme-color" content="#0F172A">
-<meta property="og:title" content="Wijaya — Tulis ke HDD NTFS dari Mac">
+<meta property="og:title" content="Wijaya — Baca-tulis disk NTFS di Mac">
 <meta property="og:description" content="GUI macOS untuk baca-tulis NTFS. Gratis, open source (MIT). Dibangun di atas ntfs-3g + FUSE-T.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="public/a.png">
@@ -155,6 +155,7 @@
     </span>
     <nav class="site" aria-label="Navigasi utama">
       <a href="#fitur">Fitur</a>
+      <a href="#format">Format</a>
       <a href="#tangkapan">Tangkapan layar</a>
       <a href="#instalasi">Instalasi</a>
       <a href="#faq">FAQ</a>
@@ -167,10 +168,10 @@
   <div class="wrap hero">
     <div>
       <span class="eyebrow">Free &amp; open source · MIT</span>
-      <h1>Tulis ke HDD NTFS dari Mac — tanpa software berbayar.</h1>
-      <p class="lead">Wijaya membuat disk NTFS bisa dibaca-tulis di Finder. Dibungkus dari driver
-        <code>ntfs-3g</code> + FUSE-T, dirancang khusus untuk Apple Silicon dan macOS Tahoe, di mana
-        tool gratis lain gagal karena proteksi macOS.</p>
+      <h1>Baca-tulis disk NTFS di Mac — tanpa software berbayar.</h1>
+      <p class="lead">Wijaya membuat <strong>disk NTFS</strong> — HDD, SSD, NVMe, flashdisk —
+        bisa dibaca-tulis di Finder. Dibungkus dari driver <code>ntfs-3g</code> + FUSE-T, dirancang
+        untuk Apple Silicon &amp; macOS Tahoe, di mana tool gratis lain gagal karena proteksi macOS.</p>
       <div class="cta-row">
         <a class="btn primary" href="https://github.com/thickkoezz/wijaya/releases">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
@@ -191,7 +192,7 @@
       </div>
     </div>
     <figure class="shot">
-      <img src="public/a.png" alt="Jendela aplikasi Wijaya menampilkan HDD NTFS My Passport dengan status dan tombol Mount Read-Write">
+      <img src="public/a.png" alt="Jendela aplikasi Wijaya menampilkan disk NTFS My Passport dengan status dan tombol Mount Read-Write">
       <figcaption>Wijaya.app — deteksi volume, satu klik mount, log transparan.</figcaption>
     </figure>
   </div>
@@ -216,9 +217,33 @@
         <div class="card">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8"/><path d="M20 4v4h-4"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 16"/><path d="M4 20v-4h4"/></svg>
           <h3>Auto-mount</h3>
-          <p>Opsional: begitu HDD NTFS dicolok, langsung read-write tanpa klik dan tanpa prompt — lewat LaunchAgent.</p>
+          <p>Opsional: begitu disk NTFS dicolok, langsung read-write tanpa klik dan tanpa prompt — lewat LaunchAgent.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section id="format">
+    <div class="wrap">
+      <span class="eyebrow">Format &amp; media</span>
+      <h2>Yang menentukan itu filesystem, bukan jenis disk</h2>
+      <p class="lead">HDD, SSD, NVMe, flashdisk, SD card — semuanya sama saja. Wijaya fokus pada
+        <strong>NTFS</strong>, dan menampilkan format lain dengan status yang jujur.</p>
+      <div class="grid cols-2" style="margin-top:26px">
+        <div class="card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M3 10h18"/><circle cx="17" cy="15" r="1.1"/></svg>
+          <h3>NTFS → butuh Wijaya</h3>
+          <p>macOS cuma bisa <em>membaca</em> NTFS. Wijaya memberi baca-tulis penuh lewat
+            <code>ntfs-3g</code> — apa pun medianya, termasuk <strong>SSD berformat NTFS</strong>.</p>
+        </div>
+        <div class="card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          <h3>exFAT · FAT32 · APFS · HFS+ → sudah bawaan macOS</h3>
+          <p>Format-format ini sudah read-write tanpa tool tambahan. Wijaya tetap menampilkannya
+            beserta statusnya, plus tombol Unmount/Eject.</p>
+        </div>
+      </div>
+      <p class="kicker" style="margin-top:16px">ext4 / Btrfs (Linux) belum didukung.</p>
     </div>
   </section>
 
@@ -227,7 +252,7 @@
       <span class="eyebrow">Tangkapan layar</span>
       <h2>Terlihat seperti aplikasi Mac pada umumnya</h2>
       <div class="gallery" style="margin-top:24px">
-        <figure class="shot"><img src="public/a.png" alt="Jendela Wijaya menampilkan HDD NTFS My Passport dengan status dan tombol mount"><figcaption>Jendela utama</figcaption></figure>
+        <figure class="shot"><img src="public/a.png" alt="Jendela Wijaya menampilkan disk NTFS My Passport dengan status dan tombol mount"><figcaption>Jendela utama</figcaption></figure>
         <figure class="shot"><img src="public/b.png" alt="Panel FUSE-T menunjukkan koneksi aktif sebagai NFS dengan tombol Disconnect"><figcaption>FUSE-T aktif</figcaption></figure>
         <figure class="shot"><img src="public/c.png" alt="Volume fuse-t muncul di bagian Locations pada sidebar Finder"><figcaption>Muncul di Finder</figcaption></figure>
       </div>
@@ -250,9 +275,9 @@
           <h3>Unduh &amp; pasang Wijaya</h3>
           <p class="kicker">Ambil <code>.dmg</code> dari halaman Releases, buka, lalu dobel-klik installer.
             Karena belum ditandatangani Apple, buka dengan <strong>klik-kanan → Open</strong>.</p>
-          <div class="copy"><button data-copy="sudo installer -pkg Wijaya-1.0.pkg -target / -allowUntrusted">Salin</button></div>
+          <div class="copy"><button data-copy="sudo installer -pkg Wijaya-1.1.pkg -target / -allowUntrusted">Salin</button></div>
           <pre># alternatif lewat Terminal (jika membuka lewat klik sulit):
-sudo installer -pkg Wijaya-1.0.pkg -target / -allowUntrusted</pre>
+sudo installer -pkg Wijaya-1.1.pkg -target / -allowUntrusted</pre>
         </li>
         <li>
           <h3>Beri izin Full Disk Access</h3>
@@ -266,7 +291,7 @@ Wijaya.app</pre>
         </li>
         <li>
           <h3>Buka Wijaya &amp; mount</h3>
-          <p class="kicker">Colok HDD NTFS-mu → klik <strong>Mount Read-Write</strong> → masukkan password admin.</p>
+          <p class="kicker">Colok disk NTFS-mu → klik <strong>Mount Read-Write</strong> → masukkan password admin.</p>
         </li>
         <li>
           <h3>Selalu Eject sebelum mencabut</h3>
