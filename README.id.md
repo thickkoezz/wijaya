@@ -398,6 +398,9 @@ Alur privileged: aplikasi memanggil `sudo -n /usr/local/libexec/wijaya-ntfsctl <
 sehingga TCC macOS menempelkan akses `/dev/disk` ke aplikasi — jalur
 `osascript … with administrator privileges` yang tidak konsisten tidak lagi dipakai untuk operasi disk.
 
+Ikon aplikasi: sumber `assets/AppIcon.svg` → hasilkan ulang `.icns` dengan `bash scripts/build-icon.sh`
+(butuh `rsvg-convert`, dari `brew install librsvg`).
+
 ## Referensi
 
 Pendekatan & temuan penting bersumber dari pengalaman nyata proyek serupa:

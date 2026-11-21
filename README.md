@@ -399,6 +399,9 @@ NOPASSWD sudoers rule for that one path). The root process is a direct child of 
 macOS TCC attributes the `/dev/disk` access to the app — the flaky
 `osascript … with administrator privileges` path is no longer used for disk operations.
 
+App icon source: `assets/AppIcon.svg` → regenerate the `.icns` with `bash scripts/build-icon.sh`
+(needs `rsvg-convert`, from `brew install librsvg`).
+
 ## References
 
 The approach and key findings come from the real-world experience of similar projects:
